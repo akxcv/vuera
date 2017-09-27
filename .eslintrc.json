@@ -1,0 +1,10 @@
+{
+  "parser": "babel-eslint",
+  "extends": ["umbrellio", "umbrellio/react"],
+  "rules": {
+    "quotes": ["error", "single"],
+    "jsx-quotes": ["error", "prefer-single"],
+    "new-cap": "off",
+    "no-param-reassign": "off"
+  }
+}
