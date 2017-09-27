@@ -1,12 +1,10 @@
+/* eslint-disable prefer-object-spread/prefer-object-spread */
+
 import resolve from 'rollup-plugin-node-resolve'
 import babel from 'rollup-plugin-babel'
 
-export default {
+const shared = {
   input: 'src/index.js',
-  output: {
-    file: 'dist/vuera.js',
-    format: 'cjs',
-  },
   plugins: [
     resolve({
       customResolveOptions: {
@@ -19,3 +17,18 @@ export default {
   ],
   external: ['react', 'react-dom', 'vue'],
 }
+
+export default [
+  Object.assign({}, shared, {
+    output: {
+      file: 'dist/vuera.cjs.js',
+      format: 'cjs',
+    },
+  }),
+  Object.assign({}, shared, {
+    output: {
+      file: 'dist/vuera.es.js',
+      format: 'es',
+    },
+  }),
+]
