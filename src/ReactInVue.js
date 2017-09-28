@@ -51,7 +51,7 @@ export default Vue.component('react', {
   watch: {
     '$props.passedProps': {
       handler () {
-        this.reactComponentRef.setState(this.$props.passedProps)
+        this.reactComponentRef.setState({ ...this.$props.passedProps })
       },
       deep: true,
     },
