@@ -44,6 +44,9 @@ export default Vue.component('react', {
   mounted () {
     this.mountReactComponent()
   },
+  beforeDestroy () {
+    ReactDOM.unmountComponentAtNode(this.$refs.react)
+  },
   /**
    * We need to update React component's state every time passedProps change, so we implement a
    * custom deep watcher for that.

@@ -25,6 +25,10 @@ export default class VueContainer extends React.Component {
     Object.assign(this.vueInstance.$data, nextProps)
   }
 
+  componentWillUnmount () {
+    this.vueInstance.$destroy()
+  }
+
   /**
    * Creates and mounts the Vue instance.
    * NOTE: since we need to access the current instance of VueContainer, as well as the Vue instance
