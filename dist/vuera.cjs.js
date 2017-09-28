@@ -254,7 +254,10 @@ var ReactInVue = Vue.component('react', {
    * to React.
    */
   props: ['component', 'passedProps'],
-  template: '<div ref="react"></div>',
+  render: function render(createElement) {
+    return createElement('div', { ref: 'react' });
+  },
+
   methods: {
     mountReactComponent: function mountReactComponent() {
       var _this2 = this;

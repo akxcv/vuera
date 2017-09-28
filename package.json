@@ -1,6 +1,6 @@
 {
   "name": "vuera",
-  "version": "0.0.1-rc.2",
+  "version": "0.0.1-rc.3",
   "main": "dist/vuera.cjs.js",
   "modules": "dist/vuera.es.js",
   "license": "MIT",

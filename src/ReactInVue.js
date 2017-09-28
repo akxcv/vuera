@@ -29,7 +29,9 @@ export default Vue.component('react', {
    * to React.
    */
   props: ['component', 'passedProps'],
-  template: '<div ref="react"></div>',
+  render (createElement) {
+    return createElement('div', { ref: 'react' })
+  },
   methods: {
     mountReactComponent () {
       const Component = makeReactContainer(this.$props.component)
