@@ -23,12 +23,37 @@ $ yarn add vuera
 $ npm i -S vuera
 ```
 
+Add `vuera/babel` to `plugins` section of your `.babelrc`:
+```json
+{
+  "presets": "react",
+  "plugins": ["vuera/babel"]
+}
+```
+
 ## Usage
 
 ### Vue in React
 
-To use a Vue component inside a React app, you need to pass the `component` prop and any other props
-to the `Vue` component. Here's an example:
+Using a Vue component in a React app is very simple! All you need to do is import your Vue component
+normally and just use it in JSX as you would use a React component:
+
+```jsx
+import React from 'react'
+import MyVueComponent from './MyVueComponent.vue'
+
+export default () => (
+  <div>
+    <h1>I'm a react component</h1>
+    <div>
+      <MyVueComponent message='Hello from Vue!' />
+    </div>
+  </div>
+)
+```
+
+If you don't want to use the babel plugin, you can still use a Vue component inside your React app
+like so:
 
 ```jsx
 import React from 'react'
@@ -51,6 +76,8 @@ export default () => (
 Functions work normal, too.
 
 ### React in Vue
+
+*A babel plugin for simplifying usage might be coming soon.*
 
 To use a React component inside a Vue app, you need to pass the `component` prop and any other props
 **into `passedProps` prop** (since Vue requires to provide a whitelist of props to every component).

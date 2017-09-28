@@ -8,6 +8,16 @@ var Vue = _interopDefault(require('vue'));
 var React = _interopDefault(require('react'));
 var ReactDOM = _interopDefault(require('react-dom'));
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
+
+
+
+
+
 var asyncGenerator = function () {
   function AwaitValue(value) {
     this.value = value;
@@ -271,6 +281,9 @@ var ReactInVue = Vue.component('react', {
   mounted: function mounted() {
     this.mountReactComponent();
   },
+  beforeDestroy: function beforeDestroy() {
+    ReactDOM.unmountComponentAtNode(this.$refs.react);
+  },
 
   /**
    * We need to update React component's state every time passedProps change, so we implement a
@@ -279,7 +292,7 @@ var ReactInVue = Vue.component('react', {
   watch: {
     '$props.passedProps': {
       handler: function handler() {
-        this.reactComponentRef.setState(this.$props.passedProps);
+        this.reactComponentRef.setState(_extends({}, this.$props.passedProps));
       },
 
       deep: true
@@ -316,6 +329,11 @@ var VueContainer = function (_React$Component) {
        * we do need to compare those objects.
        */
       Object.assign(this.vueInstance.$data, nextProps);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      this.vueInstance.$destroy();
     }
 
     /**
@@ -357,5 +375,19 @@ var VueContainer = function (_React$Component) {
   return VueContainer;
 }(React.Component);
 
+/* eslint-disable prefer-object-spread/prefer-object-spread, dot-notation */
+/**
+ * This function gets imported by the babel plugin. It wraps a suspected React element and, if it
+ * isn't a valid React element, wraps it into a Vue container.
+ */
+function wrapReactElement(el, props) {
+  if ((typeof el === 'undefined' ? 'undefined' : _typeof(el)) === 'object' && !el['$$typeof']) {
+    return React['createElement'](VueContainer, Object.assign({ component: el }, props));
+  } else {
+    return React['createElement'](el, props);
+  }
+}
+
 exports.React = ReactInVue;
 exports.Vue = VueContainer;
+exports.wrapReactElement = wrapReactElement;
