@@ -5,7 +5,7 @@
 Vuera is a library for using [React] components in [Vue] apps and for using [Vue] components in
 [React] apps.
 
-A demo can be found [here on Webpackbin](https://www.webpackbin.com/bins/-Kv4CbmcpJbNiGkCajAm).
+A demo can be found [here on Webpackbin](https://www.webpackbin.com/bins/-Kv5vs7RJ63p9KpOHYvM).
 
 ## Why
 
