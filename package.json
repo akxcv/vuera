@@ -37,6 +37,7 @@
     "eslint-plugin-vue": "^2.1.0",
     "jest": "^21.2.1",
     "jest-vue-preprocessor": "1.2.0",
+    "prettier": "^1.7.2",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "rollup": "^0.50.0",

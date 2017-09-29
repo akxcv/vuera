@@ -11,6 +11,3 @@
     props: ['message', 'reset'],
   }
 </script>
-
-<style>
-</style>

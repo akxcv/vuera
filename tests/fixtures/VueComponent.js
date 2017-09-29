@@ -2,10 +2,14 @@ import Vue from 'vue'
 
 export default Vue.component('vue-component', {
   props: ['message', 'reset'],
-  template: `
-    <div>
-      <span>{{ message }}</span>
-      <button @click="reset"></button>
-    </div>
-  `,
+  render (createElement) {
+    return createElement('div', [
+      createElement('span', this.message),
+      createElement('button', {
+        on: {
+          click: this.reset,
+        },
+      }),
+    ])
+  },
 })

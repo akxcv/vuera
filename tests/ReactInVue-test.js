@@ -22,12 +22,19 @@ const makeVueInstanceWithReactComponent = passedComponent =>
     methods: {
       reset: mockReset,
     },
-    template: `
-      <div>
-        <input v-model="message" />
-        <react :component="component" :passedProps="passedProps"></react>
-      </div>
-    `,
+    render (createElement) {
+      return createElement('div', [
+        createElement('input', {
+          model: this.message,
+        }),
+        createElement('react', {
+          props: {
+            component: this.component,
+            passedProps: this.passedProps,
+          },
+        }),
+      ])
+    },
     components: { React },
   })
 
@@ -39,14 +46,14 @@ describe('ReactInVue', () => {
   it('mounts the React component correctly', () => {
     makeVueInstanceWithReactComponent(Component)
     expect(document.body.innerHTML).toBe(
-      '<div><input> <div><div><span>Message for React</span><button></button></div></div></div>'
+      '<div><input><div><div><span>Message for React</span><button></button></div></div></div>'
     )
   })
 
   it('mounts the pure React component correctly', () => {
     makeVueInstanceWithReactComponent(PureFunctionalComponent)
     expect(document.body.innerHTML).toBe(
-      '<div><input> <div><div><span>Message for React</span><button></button></div></div></div>'
+      '<div><input><div><div><span>Message for React</span><button></button></div></div></div>'
     )
   })
 

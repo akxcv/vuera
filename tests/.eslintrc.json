@@ -1,7 +1,8 @@
 {
   "env": {
     "jest": true,
-    "browser": true
+    "browser": true,
+    "node": true
   },
   "rules": {
     "react/prop-types": "off",

@@ -28,11 +28,13 @@ const makeReactInstanceWithVueComponent = passedComponent => {
       )
     }
   }
-  ReactDOM.render(<ReactApp message='Message for Vue' />, document.getElementById('root'))
+  return ReactDOM.render(<ReactApp message='Message for Vue' />, document.getElementById('root'))
 }
 
 describe('VueInReact', () => {
   beforeEach(() => {
+    const reactRoot = document.getElementById('root')
+    if (reactRoot) ReactDOM.unmountComponentAtNode(reactRoot)
     document.body.innerHTML = '<div id="root"></div>'
   })
 
@@ -44,7 +46,8 @@ describe('VueInReact', () => {
           <div>
             <input type="text" value="Message for Vue">
             <div>
-              <span>Message for Vue</span> <button></button>
+              <span>Message for Vue</span>
+              <button></button>
             </div>
           </div>
         </div>`
@@ -52,9 +55,6 @@ describe('VueInReact', () => {
     )
   })
 
-  /**
-   * SKIPPING: having trouble with jest-vue-preprocessor
-   */
   it('mounts the Vue single file component correctly', () => {
     makeReactInstanceWithVueComponent(VueSingleFileComponent)
     expect(document.body.innerHTML).toBe(
@@ -69,5 +69,18 @@ describe('VueInReact', () => {
         </div>`
       )
     )
+  })
+
+  it('synchronises props', () => {
+    const reactAppInstance = makeReactInstanceWithVueComponent(VueComponent)
+    reactAppInstance.setState({ message: 'New message!' })
+    expect(document.body.innerHTML).toContain('New message!')
+  })
+
+  test('functions work', () => {
+    makeReactInstanceWithVueComponent(VueComponent)
+    expect(mockReset.mock.calls.length).toBe(0)
+    document.querySelector('button').click()
+    expect(mockReset.mock.calls.length).toBe(1)
   })
 })

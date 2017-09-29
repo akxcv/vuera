@@ -370,13 +370,19 @@ var VueContainer = function (_React$Component) {
 }(React.Component);
 
 /* eslint-disable prefer-object-spread/prefer-object-spread */
+function makeVueElement(component, props) {
+  return React.createElement(VueContainer, Object.assign({ component: component }, props));
+}
+
 /**
  * This function gets imported by the babel plugin. It wraps a suspected React element and, if it
  * isn't a valid React element, wraps it into a Vue container.
  */
 function wrapReactElement(el, props) {
-  if ((typeof el === 'undefined' ? 'undefined' : _typeof(el)) === 'object' && !el.$$typeof) {
-    return React.createElement(VueContainer, Object.assign({ component: el }, props));
+  if ((typeof el === 'undefined' ? 'undefined' : _typeof(el)) === 'object' && !React.isValidElement(el)) {
+    return makeVueElement(el, props);
+  } else if (typeof el === 'function' && el.prototype.constructor.super && el.prototype.constructor.super.name.startsWith('Vue')) {
+    return makeVueElement(el, props);
   } else {
     return React.createElement(el, props);
   }
