@@ -1,11 +1,11 @@
-# vuera
+# vuera [![Build Status](https://travis-ci.org/akxcv/vuera.svg?branch=master)](https://travis-ci.org/akxcv/vuera)
 
 **Warning!** UNTESTED. This is an early proof-of-concept. Stability and performance are UNKNOWN.
 
 Vuera is a library for using [React] components in [Vue] apps and for using [Vue] components in
 [React] apps.
 
-A demo can be found [here on Webpackbin](https://www.webpackbin.com/bins/-Kv5vs7RJ63p9KpOHYvM).
+A demo can be found [here on Webpackbin](https://www.webpackbin.com/bins/-Kv5vs7RJ63p9KpOHYvM).1
 
 ## Why
 
