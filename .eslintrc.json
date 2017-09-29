@@ -6,5 +6,6 @@
     "jsx-quotes": ["error", "prefer-single"],
     "new-cap": "off",
     "no-param-reassign": "off"
-  }
+  },
+  "plugins": ["vue"]
 }

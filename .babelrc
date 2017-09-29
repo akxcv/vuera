@@ -10,9 +10,14 @@
     ],
     "react"
   ],
-  "plugins": [
-    "external-helpers",
-    "transform-object-rest-spread",
-    "transform-class-properties"
-  ]
+  "plugins": ["transform-object-rest-spread", "transform-class-properties"],
+  "env": {
+    "rollup": {
+      "plugins": ["external-helpers"]
+    },
+    "test": {
+      "presets": ["es2015"],
+      "plugins": ["transform-class-properties"]
+    }
+  }
 }

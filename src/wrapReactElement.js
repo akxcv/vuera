@@ -1,4 +1,4 @@
-/* eslint-disable prefer-object-spread/prefer-object-spread, dot-notation */
+/* eslint-disable prefer-object-spread/prefer-object-spread */
 import React from 'react'
 import Vue from './VueInReact'
 
@@ -7,9 +7,9 @@ import Vue from './VueInReact'
  * isn't a valid React element, wraps it into a Vue container.
  */
 export default function wrapReactElement (el, props) {
-  if (typeof el === 'object' && !el['$$typeof']) {
-    return React['createElement'](Vue, Object.assign({ component: el }, props))
+  if (typeof el === 'object' && !el.$$typeof) {
+    return React.createElement(Vue, Object.assign({ component: el }, props))
   } else {
-    return React['createElement'](el, props)
+    return React.createElement(el, props)
   }
 }

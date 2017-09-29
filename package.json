@@ -4,7 +4,14 @@
   "main": "dist/vuera.cjs.js",
   "modules": "dist/vuera.es.js",
   "license": "MIT",
-  "keywords": ["vue", "react", "interop", "adapter"],
+  "keywords": [
+    "vue",
+    "react",
+    "interop",
+    "adapter",
+    "migrate",
+    "seamless-integration"
+  ],
   "peerDependencies": {
     "react": ">= 15",
     "react-dom": ">= 15",
@@ -13,6 +20,7 @@
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.1",
+    "babel-jest": "^21.2.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -26,12 +34,22 @@
     "eslint-plugin-prefer-object-spread": "^1.2.1",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-react": "^7.4.0",
+    "eslint-plugin-vue": "^2.1.0",
+    "jest": "^21.2.1",
+    "jest-vue-preprocessor": "1.2.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
     "rollup": "^0.50.0",
     "rollup-plugin-babel": "^3.0.2",
-    "rollup-plugin-node-resolve": "^3.0.0"
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "vue": "^2.4.4",
+    "vue-template-compiler": "^2.4.4",
+    "vue-template-es2015-compiler": "^1.5.3"
   },
   "scripts": {
-    "build": "rollup -c",
-    "lint": "eslint ."
+    "build": "BABEL_ENV=rollup rollup -c",
+    "lint": "eslint .",
+    "test": "BABEL_ENV=test jest",
+    "test:watch": "yarn run test -- --watch"
   }
 }
