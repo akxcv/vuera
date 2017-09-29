@@ -28,7 +28,19 @@ const makeReactInstanceWithVueComponent = passedComponent => {
       )
     }
   }
-  return ReactDOM.render(<ReactApp message='Message for Vue' />, document.getElementById('root'))
+  const instance = ReactDOM.render(
+    <ReactApp message='Message for Vue' />,
+    document.getElementById('root')
+  )
+  // React 15 compat
+  document.querySelectorAll('[data-reactroot]').forEach(el => {
+    el.removeAttribute('data-reactroot')
+  })
+  // React 15.2.0 compat
+  document.querySelectorAll('input[name=""]').forEach(el => {
+    el.removeAttribute('name')
+  })
+  return instance
 }
 
 describe('VueInReact', () => {

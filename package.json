@@ -13,9 +13,9 @@
     "seamless-integration"
   ],
   "peerDependencies": {
-    "react": ">= 15",
-    "react-dom": ">= 15",
-    "vue": ">= 2"
+    "react": ">= 15.2.0",
+    "react-dom": ">= 15.2.0",
+    "vue": ">= 2.2"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -38,8 +38,8 @@
     "jest": "^21.2.1",
     "jest-vue-preprocessor": "1.2.0",
     "prettier": "^1.7.2",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
+    "react": "16",
+    "react-dom": "16",
     "rollup": "^0.50.0",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",

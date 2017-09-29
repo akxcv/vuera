@@ -63,6 +63,10 @@ describe('VuePlugin', () => {
       },
     })
     return Vue.nextTick().then(() => {
+      // React 15 compat
+      document.querySelectorAll('[data-reactroot]').forEach(el => {
+        el.removeAttribute('data-reactroot')
+      })
       expect(document.body.innerHTML).toBe(
         normalizeHTMLString(
           `<div>

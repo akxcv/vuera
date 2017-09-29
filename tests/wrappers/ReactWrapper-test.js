@@ -4,8 +4,8 @@ import PureFunctionalComponent from '../fixtures/ReactPureFunctionalComponent'
 import Component from '../fixtures/ReactComponent'
 
 const mockReset = jest.fn()
-const makeVueInstanceWithReactComponent = passedComponent =>
-  new Vue({
+const makeVueInstanceWithReactComponent = passedComponent => {
+  const vm = new Vue({
     el: '#app',
     data: {
       component: passedComponent,
@@ -37,6 +37,12 @@ const makeVueInstanceWithReactComponent = passedComponent =>
     },
     components: { react: ReactWrapper },
   })
+  // React 15 compat
+  document.querySelectorAll('[data-reactroot]').forEach(el => {
+    el.removeAttribute('data-reactroot')
+  })
+  return vm
+}
 
 describe('ReactInVue', () => {
   beforeEach(() => {
