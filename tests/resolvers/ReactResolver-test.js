@@ -1,9 +1,10 @@
-import { __vueraReactResolver, VueWrapper } from '../src'
+import { __vueraReactResolver, VueWrapper } from '../../src'
 import React from 'react'
-import ReactComponent from './fixtures/ReactComponent'
-import ReactPureFunctionalComponent from './fixtures/ReactPureFunctionalComponent'
-import VueComponent from './fixtures/VueComponent'
-import VueSingleFileComponent from './fixtures/VueSingleFileComponent.vue'
+import ReactComponent from '../fixtures/ReactComponent'
+import ReactPureFunctionalComponent from '../fixtures/ReactPureFunctionalComponent'
+import VueComponent from '../fixtures/VueComponent'
+import VueRegisteredComponent from '../fixtures/VueRegisteredComponent'
+import VueSingleFileComponent from '../fixtures/VueSingleFileComponent.vue'
 
 describe('__vueraReactResolver', () => {
   it('behaves like React.createElement when a string is given', () => {
@@ -27,6 +28,12 @@ describe('__vueraReactResolver', () => {
   it('wraps Vue component', () => {
     expect(__vueraReactResolver(VueComponent, { message: 'hi' })).toEqual(
       React.createElement(VueWrapper, { component: VueComponent, message: 'hi' })
+    )
+  })
+
+  it('wraps Vue registered component', () => {
+    expect(__vueraReactResolver(VueRegisteredComponent, { message: 'hi' })).toEqual(
+      React.createElement(VueWrapper, { component: VueRegisteredComponent, message: 'hi' })
     )
   })
 

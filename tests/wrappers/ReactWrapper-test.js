@@ -1,7 +1,7 @@
 import Vue from 'vue'
-import { ReactWrapper } from '../src'
-import PureFunctionalComponent from './fixtures/ReactPureFunctionalComponent'
-import Component from './fixtures/ReactComponent'
+import { ReactWrapper } from '../../src'
+import PureFunctionalComponent from '../fixtures/ReactPureFunctionalComponent'
+import Component from '../fixtures/ReactComponent'
 
 const mockReset = jest.fn()
 const makeVueInstanceWithReactComponent = passedComponent =>

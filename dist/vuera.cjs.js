@@ -5,8 +5,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var React = _interopDefault(require('react'));
-var Vue = _interopDefault(require('vue'));
 var ReactDOM = _interopDefault(require('react-dom'));
+var Vue = _interopDefault(require('vue'));
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -228,6 +228,120 @@ var possibleConstructorReturn = function (self, call) {
   return call && (typeof call === "object" || typeof call === "function") ? call : self;
 };
 
+
+
+
+
+var slicedToArray = function () {
+  function sliceIterator(arr, i) {
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+
+    try {
+      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"]) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+
+    return _arr;
+  }
+
+  return function (arr, i) {
+    if (Array.isArray(arr)) {
+      return arr;
+    } else if (Symbol.iterator in Object(arr)) {
+      return sliceIterator(arr, i);
+    } else {
+      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+    }
+  };
+}();
+
+var makeReactContainer = function makeReactContainer(Component) {
+  var _class, _temp;
+
+  return _temp = _class = function (_React$Component) {
+    inherits(ReactInVue, _React$Component);
+
+    function ReactInVue(props) {
+      classCallCheck(this, ReactInVue);
+
+      /**
+       * We create a stateful component in order to attach a ref on it. We will use that ref to
+       * update component's state, which seems better than re-rendering the whole thing with
+       * ReactDOM.
+       */
+      var _this = possibleConstructorReturn(this, (ReactInVue.__proto__ || Object.getPrototypeOf(ReactInVue)).call(this, props));
+
+      _this.state = props;
+      return _this;
+    }
+
+    createClass(ReactInVue, [{
+      key: 'render',
+      value: function render() {
+        return React.createElement(Component, this.state);
+      }
+    }]);
+    return ReactInVue;
+  }(React.Component), _class.displayName = 'ReactInVue' + (Component.displayName || Component.name || 'Component'), _temp;
+};
+
+var ReactWrapper = {
+  /**
+   * Since we have to specify all props in Vue, we use `passedProps` as an object of props to pass
+   * to React.
+   */
+  props: ['component', 'passedProps'],
+  render: function render(createElement) {
+    return createElement('div', { ref: 'react' });
+  },
+
+  methods: {
+    mountReactComponent: function mountReactComponent() {
+      var _this2 = this;
+
+      var Component = makeReactContainer(this.$props.component);
+      ReactDOM.render(React.createElement(Component, _extends({}, this.$props.passedProps, { ref: function ref(_ref) {
+          return _this2.reactComponentRef = _ref;
+        } })), this.$refs.react);
+    }
+  },
+  mounted: function mounted() {
+    this.mountReactComponent();
+  },
+  beforeDestroy: function beforeDestroy() {
+    ReactDOM.unmountComponentAtNode(this.$refs.react);
+  },
+
+  /**
+   * We need to update React component's state every time passedProps change, so we implement a
+   * custom deep watcher for that.
+   */
+  watch: {
+    '$props.passedProps': {
+      handler: function handler() {
+        this.reactComponentRef.setState(_extends({}, this.$props.passedProps));
+      },
+
+      deep: true
+    }
+  }
+};
+
 var VueContainer = function (_React$Component) {
   inherits(VueContainer, _React$Component);
 
@@ -280,18 +394,20 @@ var VueContainer = function (_React$Component) {
       if (reactThisBinding.vue) return;
 
       var component = reactThisBinding.props.component;
-      // `this` refers to Vue instance in the constructor
+      // If component has a name, use it; otherwise assign an arbitrary name
 
+      var componentName = component.name || 'vue-component';
+      // `this` refers to Vue instance in the constructor
       reactThisBinding.vueInstance = new Vue({
         el: targetElement,
         data: _extends({}, reactThisBinding.props),
         render: function render(createElement) {
-          return createElement(component.name, {
+          return createElement(componentName, {
             props: this.$data
           });
         },
 
-        components: defineProperty({}, component.name, component)
+        components: defineProperty({}, componentName, component)
       });
     }
   }, {
@@ -303,97 +419,64 @@ var VueContainer = function (_React$Component) {
   return VueContainer;
 }(React.Component);
 
-var makeReactContainer = function makeReactContainer(Component) {
-  var _class, _temp;
-
-  return _temp = _class = function (_React$Component) {
-    inherits(ReactInVue, _React$Component);
-
-    function ReactInVue(props) {
-      classCallCheck(this, ReactInVue);
-
-      /**
-       * We create a stateful component in order to attach a ref on it. We will use that ref to
-       * update component's state, which seems better than re-rendering the whole thing with
-       * ReactDOM.
-       */
-      var _this = possibleConstructorReturn(this, (ReactInVue.__proto__ || Object.getPrototypeOf(ReactInVue)).call(this, props));
-
-      _this.state = props;
-      return _this;
-    }
-
-    createClass(ReactInVue, [{
-      key: 'render',
-      value: function render() {
-        return React.createElement(Component, this.state);
-      }
-    }]);
-    return ReactInVue;
-  }(React.Component), _class.displayName = 'ReactInVue' + (Component.displayName || Component.name || 'Component'), _temp;
-};
-
-var Vue$1 = Vue.component('react', {
-  /**
-   * Since we have to specify all props in Vue, we use `passedProps` as an object of props to pass
-   * to React.
-   */
-  props: ['component', 'passedProps'],
-  render: function render(createElement) {
-    return createElement('div', { ref: 'react' });
-  },
-
-  methods: {
-    mountReactComponent: function mountReactComponent() {
-      var _this2 = this;
-
-      var Component = makeReactContainer(this.$props.component);
-      ReactDOM.render(React.createElement(Component, _extends({}, this.$props.passedProps, { ref: function ref(_ref) {
-          return _this2.reactComponentRef = _ref;
-        } })), this.$refs.react);
-    }
-  },
-  mounted: function mounted() {
-    this.mountReactComponent();
-  },
-  beforeDestroy: function beforeDestroy() {
-    ReactDOM.unmountComponentAtNode(this.$refs.react);
-  },
-
-  /**
-   * We need to update React component's state every time passedProps change, so we implement a
-   * custom deep watcher for that.
-   */
-  watch: {
-    '$props.passedProps': {
-      handler: function handler() {
-        this.reactComponentRef.setState(_extends({}, this.$props.passedProps));
-      },
-
-      deep: true
-    }
+function isReactComponent(component) {
+  if ((typeof component === 'undefined' ? 'undefined' : _typeof(component)) === 'object') {
+    return false;
+  } else if (typeof component === 'function' && component.prototype.constructor.super && component.prototype.constructor.super.name.startsWith('Vue')) {
+    return false;
+  } else {
+    return true;
   }
-});
-
-/* eslint-disable prefer-object-spread/prefer-object-spread */
-function makeVueElement(component, props) {
-  return React.createElement(Vue$1, Object.assign({ component: component }, props));
 }
 
+function VueResolver(component) {
+  return {
+    components: { ReactWrapper: ReactWrapper },
+    props: ['passedProps'],
+    render: function render(createElement) {
+      return createElement('react-wrapper', {
+        props: {
+          component: component,
+          passedProps: this.$props.passedProps
+        }
+      });
+    }
+  };
+}
+
+/**
+ * This mixin automatically wraps all React components into Vue.
+ */
+var VuePlugin = {
+  install: function install(Vue$$1, options) {
+    /**
+     * We define a custom merging strategy for the `components` field. This strategy really just
+     * wraps all the React components while leaving Vue components as is.
+     */
+    var originalComponentsMergeStrategy = Vue$$1.config.optionMergeStrategies.components;
+    Vue$$1.config.optionMergeStrategies.components = function (parent, child, vm) {
+      var mergedValue = originalComponentsMergeStrategy(parent, child, vm);
+      return mergedValue ? Object.entries(mergedValue).reduce(function (acc, _ref) {
+        var _ref2 = slicedToArray(_ref, 2),
+            k = _ref2[0],
+            v = _ref2[1];
+
+        return _extends({}, acc, defineProperty({}, k, isReactComponent(v) ? VueResolver(v) : v));
+      }, {}) : mergedValue;
+    };
+  }
+};
+
+/* eslint-disable prefer-object-spread/prefer-object-spread */
 /**
  * This function gets imported by the babel plugin. It wraps a suspected React element and, if it
  * isn't a valid React element, wraps it into a Vue container.
  */
-function wrapReactElement(el, props) {
-  if ((typeof el === 'undefined' ? 'undefined' : _typeof(el)) === 'object' && !React.isValidElement(el)) {
-    return makeVueElement(el, props);
-  } else if (typeof el === 'function' && el.prototype.constructor.super && el.prototype.constructor.super.name.startsWith('Vue')) {
-    return makeVueElement(el, props);
-  } else {
-    return React.createElement(el, props);
-  }
+function ReactResolver$$1(component, props) {
+  return isReactComponent(component) ? React.createElement(component, props) : React.createElement(VueContainer, Object.assign({ component: component }, props));
 }
 
-exports.React = VueContainer;
-exports.Vue = Vue$1;
-exports.wrapReactElement = wrapReactElement;
+exports.ReactWrapper = ReactWrapper;
+exports.VueWrapper = VueContainer;
+exports.__vueraReactResolver = ReactResolver$$1;
+exports.VuePlugin = VuePlugin;

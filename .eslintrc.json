@@ -5,7 +5,11 @@
     "quotes": ["error", "single"],
     "jsx-quotes": ["error", "prefer-single"],
     "new-cap": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "no-new": "off"
   },
-  "plugins": ["vue"]
+  "plugins": ["vue"],
+  "globals": {
+    "Symbol": true
+  }
 }

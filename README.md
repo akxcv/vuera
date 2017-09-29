@@ -19,21 +19,21 @@ Or use [React] components in your [Vue] app:
 <template>
   <div>
     <h1>I'm a Vue component</h1>
-    <react :component="component" :passedProps="passedProps"></react>
+    <my-react-component :passedProps="passedProps"></my-react-component>
   </div>
 </template>
+
 <script>
   import { ReactWrapper } from 'vuera'
   import MyReactComponent from './MyReactComponent'
 
   export default {
     data () {
-      component: MyReactComponent,
       passedProps: {
         message: 'Hello from React!',
       },
     },
-    components: { react: ReactWrapper }
+    components: { 'my-react-component': MyReactComponent },
   }
 </script>
 ```
@@ -107,11 +107,44 @@ Functions work normal, too.
 
 ### React in Vue
 
-*A babel plugin for simplifying usage might be coming soon.*
+Using a React component in a Vue app is very simple, too! First, enable our Vue plugin:
 
-To use a React component inside a Vue app, you need to pass the `component` prop and any other props
-**into `passedProps` prop** (since Vue requires to provide a whitelist of props to every component).
-Here's an example:
+```js
+import Vue from 'vue'
+import { VuePlugin } from 'vuera'
+Vue.use(VuePlugin)
+/* ... */
+```
+
+Now just import your React component normally, register it in your Vue component as you would
+register another Vue component, and use it. There's just one caveat: you always have to enumerate
+component's props when defining it, so all the data you want to pass to the React component, you
+**must** pass via the `passedProps` prop. Here's an example:
+
+```vue
+<template>
+  <div>
+    <h1>I'm a Vue component</h1>
+    <my-react-component :passedProps="passedProps"></my-react-component>
+  </div>
+</template>
+
+<script>
+  import { ReactWrapper } from 'vuera'
+  import MyReactComponent from './MyReactComponent'
+
+  export default {
+    data () {
+      passedProps: {
+        message: 'Hello from React!',
+      },
+    },
+    components: { 'my-react-component': MyReactComponent },
+  }
+</script>
+```
+
+You can also use React components without the plugin, here's how:
 
 ```vue
 <template>

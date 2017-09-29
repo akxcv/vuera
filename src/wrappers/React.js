@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
@@ -23,7 +22,7 @@ const makeReactContainer = Component => {
   }
 }
 
-export default Vue.component('react', {
+export default {
   /**
    * Since we have to specify all props in Vue, we use `passedProps` as an object of props to pass
    * to React.
@@ -59,4 +58,4 @@ export default Vue.component('react', {
       deep: true,
     },
   },
-})
+}

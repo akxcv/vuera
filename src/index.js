@@ -1,5 +1,6 @@
-import ReactWrapper from './ReactWrapper'
-import VueWrapper from './VueWrapper'
-import { __vueraReactResolver } from './babelPluginResolvers'
+import ReactWrapper from './wrappers/React'
+import VueWrapper from './wrappers/Vue'
+import VuePlugin from './VuePlugin'
+import __vueraReactResolver from './resolvers/React'
 
-export { ReactWrapper, VueWrapper, __vueraReactResolver }
+export { ReactWrapper, VueWrapper, __vueraReactResolver, VuePlugin }

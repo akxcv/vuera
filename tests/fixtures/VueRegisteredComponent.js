@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-export default Vue.component('vue-component', {
+export default Vue.component('vue-registered-component', {
   props: ['message', 'reset'],
   render (createElement) {
     return createElement('div', [

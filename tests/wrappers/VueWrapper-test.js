@@ -1,10 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { VueWrapper } from '../src'
-import VueComponent from './fixtures/VueComponent'
-import VueRegisteredComponent from './fixtures/VueRegisteredComponent'
-import VueSingleFileComponent from './fixtures/VueSingleFileComponent.vue'
-import normalizeHTMLString from './utils/normalizeHTML'
+import { VueWrapper } from '../../src'
+import VueComponent from '../fixtures/VueComponent'
+import VueRegisteredComponent from '../fixtures/VueRegisteredComponent'
+import VueSingleFileComponent from '../fixtures/VueSingleFileComponent.vue'
 
 const mockReset = jest.fn()
 const makeReactInstanceWithVueComponent = passedComponent => {
