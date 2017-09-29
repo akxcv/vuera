@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { React } from '../src'
+import { ReactWrapper } from '../src'
 import PureFunctionalComponent from './fixtures/ReactPureFunctionalComponent'
 import Component from './fixtures/ReactComponent'
 
@@ -35,7 +35,7 @@ const makeVueInstanceWithReactComponent = passedComponent =>
         }),
       ])
     },
-    components: { React },
+    components: { react: ReactWrapper },
   })
 
 describe('ReactInVue', () => {

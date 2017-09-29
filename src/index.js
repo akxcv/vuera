@@ -1,5 +1,5 @@
-import React from './ReactInVue'
-import Vue from './VueInReact'
-import wrapReactElement from './wrapReactElement'
+import ReactWrapper from './ReactWrapper'
+import VueWrapper from './VueWrapper'
+import { __vueraReactResolver } from './babelPluginResolvers'
 
-export { React, Vue, wrapReactElement }
+export { ReactWrapper, VueWrapper, __vueraReactResolver }

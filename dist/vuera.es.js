@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import React from 'react';
+import Vue from 'vue';
 import ReactDOM from 'react-dom';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -222,78 +222,6 @@ var possibleConstructorReturn = function (self, call) {
   return call && (typeof call === "object" || typeof call === "function") ? call : self;
 };
 
-var makeReactContainer = function makeReactContainer(Component) {
-  var _class, _temp;
-
-  return _temp = _class = function (_React$Component) {
-    inherits(ReactInVue, _React$Component);
-
-    function ReactInVue(props) {
-      classCallCheck(this, ReactInVue);
-
-      /**
-       * We create a stateful component in order to attach a ref on it. We will use that ref to
-       * update component's state, which seems better than re-rendering the whole thing with
-       * ReactDOM.
-       */
-      var _this = possibleConstructorReturn(this, (ReactInVue.__proto__ || Object.getPrototypeOf(ReactInVue)).call(this, props));
-
-      _this.state = props;
-      return _this;
-    }
-
-    createClass(ReactInVue, [{
-      key: 'render',
-      value: function render() {
-        return React.createElement(Component, this.state);
-      }
-    }]);
-    return ReactInVue;
-  }(React.Component), _class.displayName = 'ReactInVue' + (Component.displayName || Component.name || 'Component'), _temp;
-};
-
-var ReactInVue = Vue.component('react', {
-  /**
-   * Since we have to specify all props in Vue, we use `passedProps` as an object of props to pass
-   * to React.
-   */
-  props: ['component', 'passedProps'],
-  render: function render(createElement) {
-    return createElement('div', { ref: 'react' });
-  },
-
-  methods: {
-    mountReactComponent: function mountReactComponent() {
-      var _this2 = this;
-
-      var Component = makeReactContainer(this.$props.component);
-      ReactDOM.render(React.createElement(Component, _extends({}, this.$props.passedProps, { ref: function ref(_ref) {
-          return _this2.reactComponentRef = _ref;
-        } })), this.$refs.react);
-    }
-  },
-  mounted: function mounted() {
-    this.mountReactComponent();
-  },
-  beforeDestroy: function beforeDestroy() {
-    ReactDOM.unmountComponentAtNode(this.$refs.react);
-  },
-
-  /**
-   * We need to update React component's state every time passedProps change, so we implement a
-   * custom deep watcher for that.
-   */
-  watch: {
-    '$props.passedProps': {
-      handler: function handler() {
-        this.reactComponentRef.setState(_extends({}, this.$props.passedProps));
-      },
-
-      deep: true
-    }
-  }
-});
-
 var VueContainer = function (_React$Component) {
   inherits(VueContainer, _React$Component);
 
@@ -369,9 +297,81 @@ var VueContainer = function (_React$Component) {
   return VueContainer;
 }(React.Component);
 
+var makeReactContainer = function makeReactContainer(Component) {
+  var _class, _temp;
+
+  return _temp = _class = function (_React$Component) {
+    inherits(ReactInVue, _React$Component);
+
+    function ReactInVue(props) {
+      classCallCheck(this, ReactInVue);
+
+      /**
+       * We create a stateful component in order to attach a ref on it. We will use that ref to
+       * update component's state, which seems better than re-rendering the whole thing with
+       * ReactDOM.
+       */
+      var _this = possibleConstructorReturn(this, (ReactInVue.__proto__ || Object.getPrototypeOf(ReactInVue)).call(this, props));
+
+      _this.state = props;
+      return _this;
+    }
+
+    createClass(ReactInVue, [{
+      key: 'render',
+      value: function render() {
+        return React.createElement(Component, this.state);
+      }
+    }]);
+    return ReactInVue;
+  }(React.Component), _class.displayName = 'ReactInVue' + (Component.displayName || Component.name || 'Component'), _temp;
+};
+
+var Vue$1 = Vue.component('react', {
+  /**
+   * Since we have to specify all props in Vue, we use `passedProps` as an object of props to pass
+   * to React.
+   */
+  props: ['component', 'passedProps'],
+  render: function render(createElement) {
+    return createElement('div', { ref: 'react' });
+  },
+
+  methods: {
+    mountReactComponent: function mountReactComponent() {
+      var _this2 = this;
+
+      var Component = makeReactContainer(this.$props.component);
+      ReactDOM.render(React.createElement(Component, _extends({}, this.$props.passedProps, { ref: function ref(_ref) {
+          return _this2.reactComponentRef = _ref;
+        } })), this.$refs.react);
+    }
+  },
+  mounted: function mounted() {
+    this.mountReactComponent();
+  },
+  beforeDestroy: function beforeDestroy() {
+    ReactDOM.unmountComponentAtNode(this.$refs.react);
+  },
+
+  /**
+   * We need to update React component's state every time passedProps change, so we implement a
+   * custom deep watcher for that.
+   */
+  watch: {
+    '$props.passedProps': {
+      handler: function handler() {
+        this.reactComponentRef.setState(_extends({}, this.$props.passedProps));
+      },
+
+      deep: true
+    }
+  }
+});
+
 /* eslint-disable prefer-object-spread/prefer-object-spread */
 function makeVueElement(component, props) {
-  return React.createElement(VueContainer, Object.assign({ component: component }, props));
+  return React.createElement(Vue$1, Object.assign({ component: component }, props));
 }
 
 /**
@@ -388,4 +388,4 @@ function wrapReactElement(el, props) {
   }
 }
 
-export { ReactInVue as React, VueContainer as Vue, wrapReactElement };
+export { VueContainer as React, Vue$1 as Vue, wrapReactElement };

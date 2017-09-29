@@ -18,8 +18,8 @@ module.exports = function ({ types }) {
             types.importDeclaration(
               [
                 types.importSpecifier(
-                  types.identifier('wrapReactElement'),
-                  types.identifier('wrapReactElement')
+                  types.identifier('__vueraReactResolver'),
+                  types.identifier('__vueraReactResolver')
                 ),
               ],
               types.stringLiteral('vuera')
@@ -28,7 +28,7 @@ module.exports = function ({ types }) {
         }
         file.insertedVueraImport = true
         path.replaceWith(
-          types.callExpression(types.identifier('wrapReactElement'), [firstArg, secondArg])
+          types.callExpression(types.identifier('__vueraReactResolver'), [firstArg, secondArg])
         )
       },
     },

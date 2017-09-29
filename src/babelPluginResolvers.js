@@ -1,16 +1,16 @@
 /* eslint-disable prefer-object-spread/prefer-object-spread */
 import React from 'react'
-import Vue from './VueInReact'
+import VueWrapper from './VueWrapper'
 
 function makeVueElement (component, props) {
-  return React.createElement(Vue, Object.assign({ component }, props))
+  return React.createElement(VueWrapper, Object.assign({ component }, props))
 }
 
 /**
  * This function gets imported by the babel plugin. It wraps a suspected React element and, if it
  * isn't a valid React element, wraps it into a Vue container.
  */
-export default function wrapReactElement (el, props) {
+export function __vueraReactResolver (el, props) {
   if (typeof el === 'object' && !React.isValidElement(el)) {
     return makeVueElement(el, props)
   } else if (

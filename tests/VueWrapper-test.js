@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Vue } from '../src'
+import { VueWrapper } from '../src'
 import VueComponent from './fixtures/VueComponent'
 import VueSingleFileComponent from './fixtures/VueSingleFileComponent.vue'
 import normalizeHTMLString from './utils/normalizeHTML'
@@ -23,7 +23,7 @@ const makeReactInstanceWithVueComponent = passedComponent => {
       return (
         <div>
           <input type='text' value={this.state.message} onChange={this.onChange} />
-          <Vue component={passedComponent} message={this.state.message} reset={mockReset} />
+          <VueWrapper component={passedComponent} message={this.state.message} reset={mockReset} />
         </div>
       )
     }
