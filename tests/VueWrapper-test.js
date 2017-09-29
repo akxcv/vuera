@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { VueWrapper } from '../src'
 import VueComponent from './fixtures/VueComponent'
+import VueRegisteredComponent from './fixtures/VueRegisteredComponent'
 import VueSingleFileComponent from './fixtures/VueSingleFileComponent.vue'
 import normalizeHTMLString from './utils/normalizeHTML'
 
@@ -40,6 +41,23 @@ describe('VueInReact', () => {
 
   it('mounts the Vue component correctly', () => {
     makeReactInstanceWithVueComponent(VueComponent)
+    expect(document.body.innerHTML).toBe(
+      normalizeHTMLString(
+        `<div id="root">
+          <div>
+            <input type="text" value="Message for Vue">
+            <div>
+              <span>Message for Vue</span>
+              <button></button>
+            </div>
+          </div>
+        </div>`
+      )
+    )
+  })
+
+  it('mounts the Vue registered component correctly', () => {
+    makeReactInstanceWithVueComponent(VueRegisteredComponent)
     expect(document.body.innerHTML).toBe(
       normalizeHTMLString(
         `<div id="root">

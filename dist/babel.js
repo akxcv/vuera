@@ -5,13 +5,15 @@ module.exports = function ({ types }) {
     visitor: {
       CallExpression (path, { file }) {
         const callee = path.node.callee
-        const firstArg = path.node.arguments[0] // maybe React element
-        const secondArg = path.node.arguments[1] // maybe props
+        const maybeReactComponent = path.node.arguments[0]
+        const maybeProps = path.node.arguments[1]
 
+        // Check if the CallExpression is `React.createElement`
         if (callee.type !== 'MemberExpression') return
         const { object, property } = callee
         if (!(object.name === 'React' && property.name === 'createElement')) return
-        if (firstArg.type === 'StringLiteral') return
+        // If the first argument is a string (built-in React component), return
+        if (maybeReactComponent.type === 'StringLiteral') return
 
         if (!file.insertedVueraImport) {
           file.path.node.body.unshift(
@@ -26,9 +28,15 @@ module.exports = function ({ types }) {
             )
           )
         }
+        // Prevent duplicate imports
         file.insertedVueraImport = true
+
+        // Replace React.createElement(component, props) with __vueraReactResoler(component, props)
         path.replaceWith(
-          types.callExpression(types.identifier('__vueraReactResolver'), [firstArg, secondArg])
+          types.callExpression(types.identifier('__vueraReactResolver'), [
+            maybeReactComponent,
+            maybeProps,
+          ])
         )
       },
     },

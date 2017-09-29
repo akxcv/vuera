@@ -42,17 +42,19 @@ export default class VueContainer extends React.Component {
     if (reactThisBinding.vue) return
 
     const { component } = reactThisBinding.props
+    // If component has a name, use it; otherwise assign an arbitrary name
+    const componentName = component.name || 'vue-component'
     // `this` refers to Vue instance in the constructor
     reactThisBinding.vueInstance = new Vue({
       el: targetElement,
       data: { ...reactThisBinding.props },
       render (createElement) {
-        return createElement(component.name, {
+        return createElement(componentName, {
           props: this.$data,
         })
       },
       components: {
-        [component.name]: component,
+        [componentName]: component,
       },
     })
   }
