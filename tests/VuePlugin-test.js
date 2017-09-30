@@ -5,6 +5,7 @@ import ReactComponent from './fixtures/ReactComponent'
 import ReactPureFunctionalComponent from './fixtures/ReactPureFunctionalComponent'
 import VueRegisteredComponent from './fixtures/VueRegisteredComponent'
 import VueSingleFileComponent from './fixtures/VueSingleFileComponent.vue'
+import olderVueCompat from './utils/olderVueCompat'
 
 Vue.use(VuePlugin)
 
@@ -43,22 +44,28 @@ describe('VuePlugin', () => {
               reset: jest.fn(),
             },
           }),
-          createElement('react-component', {
-            attrs: {
-              message: 'REACT',
-            },
-            on: {
-              reset: jest.fn(),
-            },
-          }),
-          createElement('react-pure-functional-component', {
-            attrs: {
-              message: 'REACT FUNC',
-            },
-            on: {
-              reset: jest.fn(),
-            },
-          }),
+          createElement(
+            'react-component',
+            olderVueCompat({
+              attrs: {
+                message: 'REACT',
+              },
+              on: {
+                reset: jest.fn(),
+              },
+            })
+          ),
+          createElement(
+            'react-pure-functional-component',
+            olderVueCompat({
+              attrs: {
+                message: 'REACT FUNC',
+              },
+              on: {
+                reset: jest.fn(),
+              },
+            })
+          ),
         ])
       },
     })

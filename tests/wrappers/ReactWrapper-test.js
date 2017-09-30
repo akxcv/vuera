@@ -2,6 +2,7 @@ import Vue from 'vue'
 import { ReactWrapper } from '../../src'
 import PureFunctionalComponent from '../fixtures/ReactPureFunctionalComponent'
 import Component from '../fixtures/ReactComponent'
+import olderVueCompat from '../utils/olderVueCompat'
 
 const mockReset = jest.fn()
 const makeVueInstanceWithReactComponent = passedComponent => {
@@ -19,17 +20,20 @@ const makeVueInstanceWithReactComponent = passedComponent => {
         createElement('input', {
           model: this.message,
         }),
-        createElement('react', {
-          props: {
-            component: this.component,
-          },
-          attrs: {
-            message: this.message,
-          },
-          on: {
-            reset: this.reset,
-          },
-        }),
+        createElement(
+          'react',
+          olderVueCompat({
+            props: {
+              component: this.component,
+            },
+            attrs: {
+              message: this.message,
+            },
+            on: {
+              reset: this.reset,
+            },
+          })
+        ),
       ])
     },
     components: { react: ReactWrapper },

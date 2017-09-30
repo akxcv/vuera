@@ -174,5 +174,43 @@ You can also use React components without the plugin, here's how:
 </script>
 ```
 
+**NOTE**: If you are using Vue < 2.4, you have to pass all props to your React components through
+a special prop called `passedProps`, since earlier versions of Vue require to register every
+possible prop in component configuration. Example:
+
+```vue
+<template>
+  <div>
+    <h1>I'm a Vue component</h1>
+    <my-react-component :passedProps="passedProps"></my-react-component>
+  </div>
+</template>
+
+<script>
+  import { ReactWrapper } from 'vuera'
+  import MyReactComponent from './MyReactComponent'
+
+  export default {
+    data () {
+      message: 'Hello from React!',
+    },
+    methods: {
+      reset () {
+        this.message = ''
+      }
+    },
+    computed: {
+      passedProps () {
+        return {
+          message: this.message,
+          reset: this.reset,
+        }
+      },
+    },
+    components: { 'my-react-component': MyReactComponent },
+  }
+</script>
+```
+
 [react]: https://facebook.github.io/react
 [vue]: https://vuejs.org

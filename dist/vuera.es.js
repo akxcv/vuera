@@ -295,7 +295,7 @@ var makeReactContainer = function makeReactContainer(Component) {
 };
 
 var ReactWrapper = {
-  props: ['component'],
+  props: ['component', 'passedProps'],
   render: function render(createElement) {
     return createElement('div', { ref: 'react' });
   },
@@ -305,7 +305,7 @@ var ReactWrapper = {
       var _this2 = this;
 
       var Component = makeReactContainer(this.$props.component);
-      ReactDOM.render(React.createElement(Component, _extends({}, this.$attrs, this.$listeners, {
+      ReactDOM.render(React.createElement(Component, _extends({}, this.$props.passedProps, this.$attrs, this.$listeners, {
         ref: function ref(_ref) {
           return _this2.reactComponentRef = _ref;
         }
@@ -335,6 +335,13 @@ var ReactWrapper = {
     $listeners: {
       handler: function handler() {
         this.reactComponentRef.setState(_extends({}, this.$listeners));
+      },
+
+      deep: true
+    },
+    '$props.passedProps': {
+      handler: function handler() {
+        this.reactComponentRef.setState(_extends({}, this.$props.passedProps));
       },
 
       deep: true
@@ -432,11 +439,13 @@ function isReactComponent(component) {
 function VueResolver(component) {
   return {
     components: { ReactWrapper: ReactWrapper },
+    props: ['passedProps'],
     inheritAttrs: false,
     render: function render(createElement) {
       return createElement('react-wrapper', {
         props: {
-          component: component
+          component: component,
+          passedProps: this.$props.passedProps
         },
         attrs: this.$attrs,
         on: this.$listeners

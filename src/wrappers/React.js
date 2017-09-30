@@ -25,7 +25,7 @@ const makeReactContainer = Component => {
 }
 
 export default {
-  props: ['component'],
+  props: ['component', 'passedProps'],
   render (createElement) {
     return createElement('div', { ref: 'react' })
   },
@@ -34,6 +34,7 @@ export default {
       const Component = makeReactContainer(this.$props.component)
       ReactDOM.render(
         <Component
+          {...this.$props.passedProps}
           {...this.$attrs}
           {...this.$listeners}
           ref={ref => (this.reactComponentRef = ref)}
@@ -63,6 +64,12 @@ export default {
     $listeners: {
       handler () {
         this.reactComponentRef.setState({ ...this.$listeners })
+      },
+      deep: true,
+    },
+    '$props.passedProps': {
+      handler () {
+        this.reactComponentRef.setState({ ...this.$props.passedProps })
       },
       deep: true,
     },
