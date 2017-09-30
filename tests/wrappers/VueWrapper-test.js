@@ -22,8 +22,17 @@ const makeReactInstanceWithVueComponent = passedComponent => {
     render () {
       return (
         <div>
-          <input type='text' value={this.state.message} onChange={this.onChange} />
-          <VueWrapper component={passedComponent} message={this.state.message} reset={mockReset} />
+          <input
+            type='text'
+            value={this.state.message}
+            onChange={this.onChange}
+          />
+          <VueWrapper
+            ref={ref => (this.vueWrapperRef = ref)}
+            component={passedComponent}
+            message={this.state.message}
+            reset={mockReset}
+          />
         </div>
       )
     }
@@ -111,5 +120,14 @@ describe('VueInReact', () => {
     expect(mockReset.mock.calls.length).toBe(0)
     document.querySelector('button').click()
     expect(mockReset.mock.calls.length).toBe(1)
+  })
+
+  test('when React component is unmounted, Vue instance gets destroyed', () => {
+    const reactAppInstance = makeReactInstanceWithVueComponent(VueComponent)
+    const vm = reactAppInstance.vueWrapperRef.vueInstance
+
+    expect(vm._isDestroyed).toBe(false)
+    ReactDOM.unmountComponentAtNode(document.getElementById('root'))
+    expect(vm._isDestroyed).toBe(true)
   })
 })
