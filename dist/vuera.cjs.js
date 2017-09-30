@@ -291,19 +291,19 @@ var makeReactContainer = function makeReactContainer(Component) {
     }
 
     createClass(ReactInVue, [{
-      key: "render",
+      key: 'render',
       value: function render() {
         return React.createElement(Component, this.state);
       }
     }]);
     return ReactInVue;
-  }(React.Component), _class.displayName = "ReactInVue" + (Component.displayName || Component.name || "Component"), _temp;
+  }(React.Component), _class.displayName = 'ReactInVue' + (Component.displayName || Component.name || 'Component'), _temp;
 };
 
 var ReactWrapper = {
-  props: ["component"],
+  props: ['component'],
   render: function render(createElement) {
-    return createElement("div", { ref: "react" });
+    return createElement('div', { ref: 'react' });
   },
 
   methods: {
@@ -325,6 +325,7 @@ var ReactWrapper = {
     ReactDOM.unmountComponentAtNode(this.$refs.react);
   },
 
+  inheritAttrs: false,
   /**
    * We need to update React component's state every time passedProps change, so we implement a
    * custom deep watcher for that.
@@ -437,8 +438,9 @@ function isReactComponent(component) {
 function VueResolver(component) {
   return {
     components: { ReactWrapper: ReactWrapper },
+    inheritAttrs: false,
     render: function render(createElement) {
-      return createElement("react-wrapper", {
+      return createElement('react-wrapper', {
         props: {
           component: component
         },

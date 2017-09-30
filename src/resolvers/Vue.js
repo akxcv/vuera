@@ -1,16 +1,17 @@
-import { ReactWrapper } from "../";
+import { ReactWrapper } from '../'
 
-export default function VueResolver(component) {
+export default function VueResolver (component) {
   return {
     components: { ReactWrapper },
-    render(createElement) {
-      return createElement("react-wrapper", {
+    inheritAttrs: false,
+    render (createElement) {
+      return createElement('react-wrapper', {
         props: {
-          component
+          component,
         },
         attrs: this.$attrs,
-        on: this.$listeners
-      });
-    }
-  };
+        on: this.$listeners,
+      })
+    },
+  }
 }

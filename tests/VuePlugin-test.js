@@ -1,72 +1,72 @@
-import Vue from "vue";
-import { VuePlugin } from "../src";
-import VueComponent from "./fixtures/VueComponent";
-import ReactComponent from "./fixtures/ReactComponent";
-import ReactPureFunctionalComponent from "./fixtures/ReactPureFunctionalComponent";
-import VueRegisteredComponent from "./fixtures/VueRegisteredComponent";
-import VueSingleFileComponent from "./fixtures/VueSingleFileComponent.vue";
+import Vue from 'vue'
+import { VuePlugin } from '../src'
+import VueComponent from './fixtures/VueComponent'
+import ReactComponent from './fixtures/ReactComponent'
+import ReactPureFunctionalComponent from './fixtures/ReactPureFunctionalComponent'
+import VueRegisteredComponent from './fixtures/VueRegisteredComponent'
+import VueSingleFileComponent from './fixtures/VueSingleFileComponent.vue'
 
-Vue.use(VuePlugin);
+Vue.use(VuePlugin)
 
-describe("VuePlugin", () => {
+describe('VuePlugin', () => {
   beforeEach(() => {
-    document.body.innerHTML = '<div id="app"></div>';
-  });
+    document.body.innerHTML = '<div id="app"></div>'
+  })
 
-  it("wraps React components into Vue", () => {
+  it('wraps React components into Vue', () => {
     new Vue({
-      el: "#app",
+      el: '#app',
       components: {
-        "react-component": ReactComponent,
-        "react-pure-functional-component": ReactPureFunctionalComponent,
-        "vue-component": VueComponent,
-        "vue-registered-component": VueRegisteredComponent,
-        "vue-single-file-component": VueSingleFileComponent
+        'react-component': ReactComponent,
+        'react-pure-functional-component': ReactPureFunctionalComponent,
+        'vue-component': VueComponent,
+        'vue-registered-component': VueRegisteredComponent,
+        'vue-single-file-component': VueSingleFileComponent,
       },
-      render(createElement) {
-        return createElement("div", [
-          createElement("vue-component", {
+      render (createElement) {
+        return createElement('div', [
+          createElement('vue-component', {
             props: {
-              message: "VUE",
-              reset: jest.fn()
-            }
+              message: 'VUE',
+              reset: jest.fn(),
+            },
           }),
-          createElement("vue-registered-component", {
+          createElement('vue-registered-component', {
             props: {
-              message: "VUE REGISTERED",
-              reset: jest.fn()
-            }
+              message: 'VUE REGISTERED',
+              reset: jest.fn(),
+            },
           }),
-          createElement("vue-single-file-component", {
+          createElement('vue-single-file-component', {
             props: {
-              message: "VUE SINGLE FILE",
-              reset: jest.fn()
-            }
+              message: 'VUE SINGLE FILE',
+              reset: jest.fn(),
+            },
           }),
-          createElement("react-component", {
+          createElement('react-component', {
             attrs: {
-              message: "REACT"
+              message: 'REACT',
             },
             on: {
-              reset: jest.fn()
-            }
+              reset: jest.fn(),
+            },
           }),
-          createElement("react-pure-functional-component", {
+          createElement('react-pure-functional-component', {
             attrs: {
-              message: "REACT FUNC"
+              message: 'REACT FUNC',
             },
             on: {
-              reset: jest.fn()
-            }
-          })
-        ]);
-      }
-    });
+              reset: jest.fn(),
+            },
+          }),
+        ])
+      },
+    })
     return Vue.nextTick().then(() => {
       // React 15 compat
-      document.querySelectorAll("[data-reactroot]").forEach(el => {
-        el.removeAttribute("data-reactroot");
-      });
+      document.querySelectorAll('[data-reactroot]').forEach(el => {
+        el.removeAttribute('data-reactroot')
+      })
       expect(document.body.innerHTML).toBe(
         normalizeHTMLString(
           `<div>
@@ -81,13 +81,13 @@ describe("VuePlugin", () => {
             <div>
               <span>VUE SINGLE FILE</span> <button></button>
             </div>
-            <div message="REACT">
+            <div>
               <div>
                 <span>REACT</span>
                 <button></button>
               </div>
             </div>
-            <div message="REACT FUNC">
+            <div>
               <div>
                 <span>REACT FUNC</span>
                 <button></button>
@@ -95,7 +95,7 @@ describe("VuePlugin", () => {
             </div>
           </div>`
         )
-      );
-    });
-  });
-});
+      )
+    })
+  })
+})

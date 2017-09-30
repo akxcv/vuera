@@ -57,6 +57,10 @@
     "precommit": "lint-staged && yarn run build && git add dist"
   },
   "lint-staged": {
-    "*.{js,json}": ["prettier --write", "git add"]
+    "*.json": ["prettier --write", "git add"],
+    "src/**/*.js": ["prettier --write", "eslint --fix", "git add"],
+    "tests/**/*.js": ["prettier --write", "eslint --fix", "git add"],
+    "/*.js": ["prettier --write", "eslint --fix", "git add"],
+    "dist/babel.js": ["prettier --write", "eslint --fix", "git add"]
   }
 }
