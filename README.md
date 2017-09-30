@@ -5,11 +5,13 @@ Use [Vue] components in your [React] app:
 import React from 'react'
 import MyVueComponent from './MyVueComponent.vue'
 
-export default () =>
+export default props =>
   <div>
     <h1>I'm a react component</h1>
     <div>
-      <MyVueComponent message='Hello from Vue!' />
+      <MyVueComponent message={props.message} handleReset={props.handleReset}>
+        {props.contents}
+      </MyVueComponent>
     </div>
   </div>
 ```
@@ -19,7 +21,9 @@ Or use [React] components in your [Vue] app:
 <template>
   <div>
     <h1>I'm a Vue component</h1>
-    <my-react-component :message="message" @reset="reset"></my-react-component>
+    <my-react-component :message="message" @reset="reset">
+      <span>Inside React</span>
+    </my-react-component>
   </div>
 </template>
 
@@ -85,6 +89,8 @@ export default () => (
 )
 ```
 
+Functions work as usual. You can also pass any valid React elements as children.
+
 If you don't want to use the babel plugin, you can still use a Vue component inside your React app
 like so:
 
@@ -105,8 +111,6 @@ export default () => (
   </div>
 )
 ```
-
-Functions work normal, too.
 
 ### React in Vue
 
@@ -147,6 +151,8 @@ register another Vue component, and use it:
   }
 </script>
 ```
+
+You can also pass any valid Vue elements as chilren.
 
 You can also use React components without the plugin, here's how:
 

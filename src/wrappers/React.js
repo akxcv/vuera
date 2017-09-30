@@ -1,11 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import VueWrapper from './Vue'
 
 const makeReactContainer = Component => {
   return class ReactInVue extends React.Component {
     static displayName = `ReactInVue${Component.displayName ||
       Component.name ||
-      'Component'}`;
+      'Component'}`
 
     constructor (props) {
       super(props)
@@ -24,6 +25,10 @@ const makeReactContainer = Component => {
   }
 }
 
+const wrapVueChildren = children => ({
+  render: createElement => createElement('div', children),
+})
+
 export default {
   props: ['component', 'passedProps'],
   render (createElement) {
@@ -32,13 +37,16 @@ export default {
   methods: {
     mountReactComponent () {
       const Component = makeReactContainer(this.$props.component)
+      const wrappedChildren = wrapVueChildren(this.$slots.default)
       ReactDOM.render(
         <Component
           {...this.$props.passedProps}
           {...this.$attrs}
           {...this.$listeners}
           ref={ref => (this.reactComponentRef = ref)}
-        />,
+        >
+          <VueWrapper component={wrappedChildren} />
+        </Component>,
         this.$refs.react
       )
     },
@@ -50,10 +58,6 @@ export default {
     ReactDOM.unmountComponentAtNode(this.$refs.react)
   },
   inheritAttrs: false,
-  /**
-   * We need to update React component's state every time passedProps change, so we implement a
-   * custom deep watcher for that.
-   */
   watch: {
     $attrs: {
       handler () {

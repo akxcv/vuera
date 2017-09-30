@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import React from 'react'
 import { VuePlugin } from '../src'
 import VueComponent from './fixtures/VueComponent'
 import ReactComponent from './fixtures/ReactComponent'
@@ -20,6 +21,7 @@ describe('VuePlugin', () => {
       components: {
         'react-component': ReactComponent,
         'react-pure-functional-component': ReactPureFunctionalComponent,
+        'react-with-children': ({ children }) => <div>{children}</div>,
         'vue-component': VueComponent,
         'vue-registered-component': VueRegisteredComponent,
         'vue-single-file-component': VueSingleFileComponent,
@@ -66,6 +68,10 @@ describe('VuePlugin', () => {
               },
             })
           ),
+          createElement('react-with-children', [
+            'child1',
+            createElement('div', 'child2'),
+          ]),
         ])
       },
     })
@@ -98,6 +104,14 @@ describe('VuePlugin', () => {
               <div>
                 <span>REACT FUNC</span>
                 <button></button>
+              </div>
+            </div>
+            <div>
+              <div>
+                <div>
+                  child1
+                  <div>child2</div>
+                </div>
               </div>
             </div>
           </div>`

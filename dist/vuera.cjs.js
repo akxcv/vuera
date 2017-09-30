@@ -218,7 +218,17 @@ var inherits = function (subClass, superClass) {
 
 
 
+var objectWithoutProperties = function (obj, keys) {
+  var target = {};
 
+  for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;
+    if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+    target[i] = obj[i];
+  }
+
+  return target;
+};
 
 var possibleConstructorReturn = function (self, call) {
   if (!self) {
@@ -270,89 +280,18 @@ var slicedToArray = function () {
   };
 }();
 
-var makeReactContainer = function makeReactContainer(Component) {
-  var _class, _temp;
-
-  return _temp = _class = function (_React$Component) {
-    inherits(ReactInVue, _React$Component);
-
-    function ReactInVue(props) {
-      classCallCheck(this, ReactInVue);
-
-      /**
-       * We create a stateful component in order to attach a ref on it. We will use that ref to
-       * update component's state, which seems better than re-rendering the whole thing with
-       * ReactDOM.
-       */
-      var _this = possibleConstructorReturn(this, (ReactInVue.__proto__ || Object.getPrototypeOf(ReactInVue)).call(this, props));
-
-      _this.state = props;
-      return _this;
-    }
-
-    createClass(ReactInVue, [{
-      key: 'render',
-      value: function render() {
-        return React.createElement(Component, this.state);
+var wrapReactChildren = function wrapReactChildren(createElement, children) {
+  return createElement('vuera-internal-react-wrapper', {
+    props: {
+      component: function component() {
+        return React.createElement(
+          'div',
+          null,
+          children
+        );
       }
-    }]);
-    return ReactInVue;
-  }(React.Component), _class.displayName = 'ReactInVue' + (Component.displayName || Component.name || 'Component'), _temp;
-};
-
-var ReactWrapper = {
-  props: ['component', 'passedProps'],
-  render: function render(createElement) {
-    return createElement('div', { ref: 'react' });
-  },
-
-  methods: {
-    mountReactComponent: function mountReactComponent() {
-      var _this2 = this;
-
-      var Component = makeReactContainer(this.$props.component);
-      ReactDOM.render(React.createElement(Component, _extends({}, this.$props.passedProps, this.$attrs, this.$listeners, {
-        ref: function ref(_ref) {
-          return _this2.reactComponentRef = _ref;
-        }
-      })), this.$refs.react);
     }
-  },
-  mounted: function mounted() {
-    this.mountReactComponent();
-  },
-  beforeDestroy: function beforeDestroy() {
-    ReactDOM.unmountComponentAtNode(this.$refs.react);
-  },
-
-  inheritAttrs: false,
-  /**
-   * We need to update React component's state every time passedProps change, so we implement a
-   * custom deep watcher for that.
-   */
-  watch: {
-    $attrs: {
-      handler: function handler() {
-        this.reactComponentRef.setState(_extends({}, this.$attrs));
-      },
-
-      deep: true
-    },
-    $listeners: {
-      handler: function handler() {
-        this.reactComponentRef.setState(_extends({}, this.$listeners));
-      },
-
-      deep: true
-    },
-    '$props.passedProps': {
-      handler: function handler() {
-        this.reactComponentRef.setState(_extends({}, this.$props.passedProps));
-      },
-
-      deep: true
-    }
-  }
+  });
 };
 
 var VueContainer = function (_React$Component) {
@@ -403,24 +342,29 @@ var VueContainer = function (_React$Component) {
   }, {
     key: 'createVueInstance',
     value: function createVueInstance(targetElement, reactThisBinding) {
+      var _components;
+
       // If the Vue instance has already been initialized, do nothing
       if (reactThisBinding.vue) return;
 
-      var component = reactThisBinding.props.component;
+      var _reactThisBinding$pro = reactThisBinding.props,
+          component = _reactThisBinding$pro.component,
+          children = _reactThisBinding$pro.children,
+          props = objectWithoutProperties(_reactThisBinding$pro, ['component', 'children']);
       // If component has a name, use it; otherwise assign an arbitrary name
 
       var componentName = component.name || 'vue-component';
       // `this` refers to Vue instance in the constructor
       reactThisBinding.vueInstance = new Vue({
         el: targetElement,
-        data: _extends({}, reactThisBinding.props),
+        data: _extends({}, props),
         render: function render(createElement) {
           return createElement(componentName, {
             props: this.$data
-          });
+          }, [wrapReactChildren(createElement, children)]);
         },
 
-        components: defineProperty({}, componentName, component)
+        components: (_components = {}, defineProperty(_components, componentName, component), defineProperty(_components, 'vuera-internal-react-wrapper', ReactWrapper), _components)
       });
     }
   }, {
@@ -431,6 +375,100 @@ var VueContainer = function (_React$Component) {
   }]);
   return VueContainer;
 }(React.Component);
+
+var makeReactContainer = function makeReactContainer(Component) {
+  var _class, _temp;
+
+  return _temp = _class = function (_React$Component) {
+    inherits(ReactInVue, _React$Component);
+
+    function ReactInVue(props) {
+      classCallCheck(this, ReactInVue);
+
+      /**
+       * We create a stateful component in order to attach a ref on it. We will use that ref to
+       * update component's state, which seems better than re-rendering the whole thing with
+       * ReactDOM.
+       */
+      var _this = possibleConstructorReturn(this, (ReactInVue.__proto__ || Object.getPrototypeOf(ReactInVue)).call(this, props));
+
+      _this.state = props;
+      return _this;
+    }
+
+    createClass(ReactInVue, [{
+      key: 'render',
+      value: function render() {
+        return React.createElement(Component, this.state);
+      }
+    }]);
+    return ReactInVue;
+  }(React.Component), _class.displayName = 'ReactInVue' + (Component.displayName || Component.name || 'Component'), _temp;
+};
+
+var wrapVueChildren = function wrapVueChildren(children) {
+  return {
+    render: function render(createElement) {
+      return createElement('div', children);
+    }
+  };
+};
+
+var ReactWrapper = {
+  props: ['component', 'passedProps'],
+  render: function render(createElement) {
+    return createElement('div', { ref: 'react' });
+  },
+
+  methods: {
+    mountReactComponent: function mountReactComponent() {
+      var _this2 = this;
+
+      var Component = makeReactContainer(this.$props.component);
+      var wrappedChildren = wrapVueChildren(this.$slots.default);
+      ReactDOM.render(React.createElement(
+        Component,
+        _extends({}, this.$props.passedProps, this.$attrs, this.$listeners, {
+          ref: function ref(_ref) {
+            return _this2.reactComponentRef = _ref;
+          }
+        }),
+        React.createElement(VueContainer, { component: wrappedChildren })
+      ), this.$refs.react);
+    }
+  },
+  mounted: function mounted() {
+    this.mountReactComponent();
+  },
+  beforeDestroy: function beforeDestroy() {
+    ReactDOM.unmountComponentAtNode(this.$refs.react);
+  },
+
+  inheritAttrs: false,
+  watch: {
+    $attrs: {
+      handler: function handler() {
+        this.reactComponentRef.setState(_extends({}, this.$attrs));
+      },
+
+      deep: true
+    },
+    $listeners: {
+      handler: function handler() {
+        this.reactComponentRef.setState(_extends({}, this.$listeners));
+      },
+
+      deep: true
+    },
+    '$props.passedProps': {
+      handler: function handler() {
+        this.reactComponentRef.setState(_extends({}, this.$props.passedProps));
+      },
+
+      deep: true
+    }
+  }
+};
 
 function isReactComponent(component) {
   if ((typeof component === 'undefined' ? 'undefined' : _typeof(component)) === 'object') {
@@ -455,7 +493,7 @@ function VueResolver(component) {
         },
         attrs: this.$attrs,
         on: this.$listeners
-      });
+      }, this.$slots.default);
     }
   };
 }

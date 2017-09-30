@@ -54,8 +54,6 @@ const makeReactInstanceWithVueComponent = passedComponent => {
 
 describe('VueInReact', () => {
   beforeEach(() => {
-    const reactRoot = document.getElementById('root')
-    if (reactRoot) ReactDOM.unmountComponentAtNode(reactRoot)
     document.body.innerHTML = '<div id="root"></div>'
   })
 
@@ -129,5 +127,70 @@ describe('VueInReact', () => {
     expect(vm._isDestroyed).toBe(false)
     ReactDOM.unmountComponentAtNode(document.getElementById('root'))
     expect(vm._isDestroyed).toBe(true)
+  })
+
+  describe('children', () => {
+    const componentWithChildren = {
+      render (createElement) {
+        return createElement('div', this.$slots.default)
+      },
+    }
+
+    const render = (...children) => {
+      ReactDOM.render(
+        <VueWrapper component={componentWithChildren}>{children}</VueWrapper>,
+        document.getElementById('root')
+      )
+      // React 15 compat
+      document.querySelectorAll('[data-reactroot]').forEach(el => {
+        el.removeAttribute('data-reactroot')
+      })
+      document.body.innerHTML = document.body.innerHTML.replace(
+        /<!--[\s\S]*?-->/g,
+        ''
+      )
+    }
+
+    it('works with a string', () => {
+      render('Hello')
+      expect(document.querySelector('#root div div').innerHTML).toBe(
+        '<div>Hello</div>'
+      )
+    })
+
+    it('works with a React component', () => {
+      render(<div>Hello</div>)
+      expect(document.querySelector('#root div div').innerHTML).toBe(
+        '<div><div>Hello</div></div>'
+      )
+    })
+
+    it('works with a React component', () => {
+      render(
+        <VueWrapper component={componentWithChildren}>wow so nested</VueWrapper>
+      )
+      expect(document.querySelector('#root div div').innerHTML).toBe(
+        '<div><div><div><div>wow so nested</div></div></div></div>'
+      )
+    })
+
+    it('works with multiple children', () => {
+      render(
+        'Hi there',
+        <div>Hello</div>,
+        <VueWrapper component={componentWithChildren}>wow so nested</VueWrapper>
+      )
+      expect(document.querySelector('#root div div').innerHTML).toBe(
+        normalizeHTMLString(
+          `<div>
+            Hi there
+            <div>Hello</div>
+            <div><div><div>
+              wow so nested
+            </div></div></div>
+          </div>`
+        )
+      )
+    })
   })
 })

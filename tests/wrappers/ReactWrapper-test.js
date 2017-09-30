@@ -1,11 +1,15 @@
 import Vue from 'vue'
+import React from 'react'
 import { ReactWrapper } from '../../src'
 import PureFunctionalComponent from '../fixtures/ReactPureFunctionalComponent'
 import Component from '../fixtures/ReactComponent'
 import olderVueCompat from '../utils/olderVueCompat'
 
 const mockReset = jest.fn()
-const makeVueInstanceWithReactComponent = passedComponent => {
+const makeVueInstanceWithReactComponent = (
+  passedComponent,
+  optionalRenderFn
+) => {
   const vm = new Vue({
     el: '#app',
     data: {
@@ -15,27 +19,31 @@ const makeVueInstanceWithReactComponent = passedComponent => {
     methods: {
       reset: mockReset,
     },
-    render (createElement) {
-      return createElement('div', [
-        createElement('input', {
-          model: this.message,
-        }),
-        createElement(
-          'react',
-          olderVueCompat({
-            props: {
-              component: this.component,
+    render:
+      optionalRenderFn ||
+      function (createElement) {
+        return createElement('div', [
+          createElement('input', {
+            htmlAttrs: {
+              value: this.message,
             },
-            attrs: {
-              message: this.message,
-            },
-            on: {
-              reset: this.reset,
-            },
-          })
-        ),
-      ])
-    },
+          }),
+          createElement(
+            'react',
+            olderVueCompat({
+              props: {
+                component: this.component,
+              },
+              attrs: {
+                message: this.message,
+              },
+              on: {
+                reset: this.reset,
+              },
+            })
+          ),
+        ])
+      },
     components: { react: ReactWrapper },
   })
   // React 15 compat
@@ -92,5 +100,96 @@ describe('ReactInVue', () => {
     expect(reactInstance.updater.isMounted(reactInstance)).toBe(true)
     vm.$destroy()
     expect(reactInstance.updater.isMounted(reactInstance)).toBe(false)
+  })
+
+  describe('children', () => {
+    const componentWithChildren = ({ children }) => <div>{children}</div>
+
+    it('works with a string', () => {
+      makeVueInstanceWithReactComponent(componentWithChildren, function (
+        createElement
+      ) {
+        return createElement('div', [
+          createElement(
+            'react',
+            olderVueCompat({ props: { component: this.component } }),
+            'string inside'
+          ),
+        ])
+      })
+      expect(document.body.innerHTML).toBe(
+        '<div><div><div><div>string inside</div></div></div></div>'
+      )
+    })
+
+    it('works with a Vue component', () => {
+      makeVueInstanceWithReactComponent(componentWithChildren, function (
+        createElement
+      ) {
+        return createElement('div', [
+          createElement(
+            'react',
+            olderVueCompat({ props: { component: this.component } }),
+            [createElement('span', 'hello from span')]
+          ),
+        ])
+      })
+      expect(document.body.innerHTML).toBe(
+        normalizeHTMLString(
+          `<div><div><div><div>
+            <span>hello from span</span>
+          </div></div></div></div>`
+        )
+      )
+    })
+
+    it('works with a React component', () => {
+      makeVueInstanceWithReactComponent(componentWithChildren, function (
+        createElement
+      ) {
+        return createElement('div', [
+          createElement(
+            'react',
+            olderVueCompat({ props: { component: this.component } }),
+            [
+              createElement(
+                'react',
+                olderVueCompat({ props: { component: this.component } }),
+                'child'
+              ),
+            ]
+          ),
+        ])
+      })
+      expect(document.body.innerHTML).toBe(
+        normalizeHTMLString(
+          `<div><div><div><div><div><div><div>
+            child
+          </div></div></div></div></div></div></div>`
+        )
+      )
+    })
+
+    it('works with multiple children', () => {
+      makeVueInstanceWithReactComponent(componentWithChildren, function (
+        createElement
+      ) {
+        return createElement('div', [
+          createElement(
+            'react',
+            olderVueCompat({ props: { component: this.component } }),
+            ['string inside', createElement('span', 'hello from span')]
+          ),
+        ])
+      })
+      expect(document.body.innerHTML).toBe(
+        normalizeHTMLString(
+          `<div><div><div><div>
+            string inside
+            <span>hello from span</span>
+          </div></div></div></div>`
+        )
+      )
+    })
   })
 })

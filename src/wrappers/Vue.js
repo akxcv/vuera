@@ -1,5 +1,13 @@
 import React from 'react'
 import Vue from 'vue'
+import ReactWrapper from './React'
+
+const wrapReactChildren = (createElement, children) =>
+  createElement('vuera-internal-react-wrapper', {
+    props: {
+      component: () => <div>{children}</div>,
+    },
+  })
 
 export default class VueContainer extends React.Component {
   constructor (props) {
@@ -41,20 +49,25 @@ export default class VueContainer extends React.Component {
     // If the Vue instance has already been initialized, do nothing
     if (reactThisBinding.vue) return
 
-    const { component } = reactThisBinding.props
+    const { component, children, ...props } = reactThisBinding.props
     // If component has a name, use it; otherwise assign an arbitrary name
     const componentName = component.name || 'vue-component'
     // `this` refers to Vue instance in the constructor
     reactThisBinding.vueInstance = new Vue({
       el: targetElement,
-      data: { ...reactThisBinding.props },
+      data: { ...props },
       render (createElement) {
-        return createElement(componentName, {
-          props: this.$data,
-        })
+        return createElement(
+          componentName,
+          {
+            props: this.$data,
+          },
+          [wrapReactChildren(createElement, children)]
+        )
       },
       components: {
         [componentName]: component,
+        'vuera-internal-react-wrapper': ReactWrapper,
       },
     })
   }
