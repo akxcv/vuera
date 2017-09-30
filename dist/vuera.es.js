@@ -285,23 +285,19 @@ var makeReactContainer = function makeReactContainer(Component) {
     }
 
     createClass(ReactInVue, [{
-      key: 'render',
+      key: "render",
       value: function render() {
         return React.createElement(Component, this.state);
       }
     }]);
     return ReactInVue;
-  }(React.Component), _class.displayName = 'ReactInVue' + (Component.displayName || Component.name || 'Component'), _temp;
+  }(React.Component), _class.displayName = "ReactInVue" + (Component.displayName || Component.name || "Component"), _temp;
 };
 
 var ReactWrapper = {
-  /**
-   * Since we have to specify all props in Vue, we use `passedProps` as an object of props to pass
-   * to React.
-   */
-  props: ['component', 'passedProps'],
+  props: ["component"],
   render: function render(createElement) {
-    return createElement('div', { ref: 'react' });
+    return createElement("div", { ref: "react" });
   },
 
   methods: {
@@ -309,9 +305,11 @@ var ReactWrapper = {
       var _this2 = this;
 
       var Component = makeReactContainer(this.$props.component);
-      ReactDOM.render(React.createElement(Component, _extends({}, this.$props.passedProps, { ref: function ref(_ref) {
+      ReactDOM.render(React.createElement(Component, _extends({}, this.$attrs, this.$listeners, {
+        ref: function ref(_ref) {
           return _this2.reactComponentRef = _ref;
-        } })), this.$refs.react);
+        }
+      })), this.$refs.react);
     }
   },
   mounted: function mounted() {
@@ -326,9 +324,16 @@ var ReactWrapper = {
    * custom deep watcher for that.
    */
   watch: {
-    '$props.passedProps': {
+    $attrs: {
       handler: function handler() {
-        this.reactComponentRef.setState(_extends({}, this.$props.passedProps));
+        this.reactComponentRef.setState(_extends({}, this.$attrs));
+      },
+
+      deep: true
+    },
+    $listeners: {
+      handler: function handler() {
+        this.reactComponentRef.setState(_extends({}, this.$listeners));
       },
 
       deep: true
@@ -426,13 +431,13 @@ function isReactComponent(component) {
 function VueResolver(component) {
   return {
     components: { ReactWrapper: ReactWrapper },
-    props: ['passedProps'],
     render: function render(createElement) {
-      return createElement('react-wrapper', {
+      return createElement("react-wrapper", {
         props: {
-          component: component,
-          passedProps: this.$props.passedProps
-        }
+          component: component
+        },
+        attrs: this.$attrs,
+        on: this.$listeners
       });
     }
   };

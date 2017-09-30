@@ -54,7 +54,7 @@
     "lint": "eslint .",
     "test": "BABEL_ENV=test jest",
     "test:watch": "yarn run test -- --watch",
-    "precommit": "lint-staged && yarn run build"
+    "precommit": "lint-staged && yarn run build && git add dist"
   },
   "lint-staged": {
     "*.{js,json}": ["prettier --write", "git add"]

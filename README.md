@@ -19,7 +19,7 @@ Or use [React] components in your [Vue] app:
 <template>
   <div>
     <h1>I'm a Vue component</h1>
-    <my-react-component :passedProps="passedProps"></my-react-component>
+    <my-react-component :message="message" @reset="reset"></my-react-component>
   </div>
 </template>
 
@@ -29,9 +29,12 @@ Or use [React] components in your [Vue] app:
 
   export default {
     data () {
-      passedProps: {
-        message: 'Hello from React!',
-      },
+      message: 'Hello from React!',
+    },
+    methods: {
+      reset () {
+        this.message = ''
+      }
     },
     components: { 'my-react-component': MyReactComponent },
   }
@@ -117,15 +120,13 @@ Vue.use(VuePlugin)
 ```
 
 Now just import your React component normally, register it in your Vue component as you would
-register another Vue component, and use it. There's just one caveat: you always have to enumerate
-component's props when defining it, so all the data you want to pass to the React component, you
-**must** pass via the `passedProps` prop. Here's an example:
+register another Vue component, and use it:
 
 ```vue
 <template>
   <div>
     <h1>I'm a Vue component</h1>
-    <my-react-component :passedProps="passedProps"></my-react-component>
+    <my-react-component :message="message" @reset="reset"></my-react-component>
   </div>
 </template>
 
@@ -135,9 +136,12 @@ component's props when defining it, so all the data you want to pass to the Reac
 
   export default {
     data () {
-      passedProps: {
-        message: 'Hello from React!',
-      },
+      message: 'Hello from React!',
+    },
+    methods: {
+      reset () {
+        this.message = ''
+      }
     },
     components: { 'my-react-component': MyReactComponent },
   }
@@ -151,7 +155,7 @@ You can also use React components without the plugin, here's how:
   <div>
     <h1>I'm a Vue component</h1>
     <div>
-      <react :component="component" :passedProps="passedProps"></react>
+      <react :component="component" :message="message"></react>
     </div>
   </div>
 </template>
@@ -164,17 +168,6 @@ You can also use React components without the plugin, here's how:
     data () {
       component: MyReactComponent,
       message: 'Hello from React!',
-    },
-    /**
-     * It's recommended to declare `passedProps` as a computed property. This way you won't bloat
-     * your Vue component, and you will be able to pass methods as well.
-     */
-    computed: {
-      passedProps () {
-        return {
-          message: this.message,
-        }
-      },
     },
     components: { react: ReactWrapper }
   }
