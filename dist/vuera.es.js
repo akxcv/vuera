@@ -474,7 +474,7 @@ function isReactComponent(component) {
   }
 }
 
-function VueResolver(component) {
+function VueResolver$$1(component) {
   return {
     components: { ReactWrapper: ReactWrapper },
     props: ['passedProps'],
@@ -509,19 +509,25 @@ var VuePlugin = {
             k = _ref2[0],
             v = _ref2[1];
 
-        return _extends({}, acc, defineProperty({}, k, isReactComponent(v) ? VueResolver(v) : v));
+        return _extends({}, acc, defineProperty({}, k, isReactComponent(v) ? VueResolver$$1(v) : v));
       }, {}) : mergedValue;
     };
   }
 };
 
 /* eslint-disable prefer-object-spread/prefer-object-spread */
+function ReactResolver$$1(component) {
+  return isReactComponent(component) ? component : function (props) {
+    return React.createElement(VueContainer, _extends({}, props, { component: component }));
+  };
+}
+
 /**
  * This function gets imported by the babel plugin. It wraps a suspected React element and, if it
  * isn't a valid React element, wraps it into a Vue container.
  */
-function ReactResolver$$1(component, props) {
+function babelReactResolver$$1(component, props) {
   return isReactComponent(component) ? React.createElement(component, props) : React.createElement(VueContainer, Object.assign({ component: component }, props));
 }
 
-export { ReactWrapper, VueContainer as VueWrapper, ReactResolver$$1 as __vueraReactResolver, VuePlugin };
+export { ReactWrapper, VueContainer as VueWrapper, babelReactResolver$$1 as __vueraReactResolver, VuePlugin, ReactResolver$$1 as VueInReact, VueResolver$$1 as ReactInVue };

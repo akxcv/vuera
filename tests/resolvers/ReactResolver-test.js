@@ -1,45 +1,61 @@
-import { __vueraReactResolver, VueWrapper } from '../../src'
+import { VueInReact } from '../../src'
 import React from 'react'
+import ReactDOM from 'react-dom'
 import ReactComponent from '../fixtures/ReactComponent'
 import ReactPureFunctionalComponent from '../fixtures/ReactPureFunctionalComponent'
 import VueComponent from '../fixtures/VueComponent'
 import VueRegisteredComponent from '../fixtures/VueRegisteredComponent'
 import VueSingleFileComponent from '../fixtures/VueSingleFileComponent.vue'
 
-describe('__vueraReactResolver', () => {
-  it('behaves like React.createElement when a string is given', () => {
-    expect(__vueraReactResolver('div', { id: 'hi' })).toEqual(
-      React.createElement('div', { id: 'hi' })
-    )
+describe('VueInReact', () => {
+  beforeEach(() => {
+    document.body.innerHTML = '<div id="root"></div>'
   })
 
-  it('behaves like React.createElement when a React component is given', () => {
-    expect(__vueraReactResolver(ReactComponent, { message: 'hi' })).toEqual(
-      React.createElement(ReactComponent, { message: 'hi' })
-    )
+  it('returns given component when a string is given', () => {
+    expect(VueInReact('div')).toBe('div')
   })
 
-  it('behaves like React.createElement when a React functional component is given', () => {
-    expect(__vueraReactResolver(ReactPureFunctionalComponent, { message: 'hi' })).toEqual(
-      React.createElement(ReactPureFunctionalComponent, { message: 'hi' })
+  it('returns given component when a React component is given', () => {
+    expect(VueInReact(ReactComponent)).toBe(ReactComponent)
+  })
+
+  it('returns given component when a React functional component is given', () => {
+    expect(VueInReact(ReactPureFunctionalComponent)).toBe(
+      ReactPureFunctionalComponent
     )
   })
 
   it('wraps Vue component', () => {
-    expect(__vueraReactResolver(VueComponent, { message: 'hi' })).toEqual(
-      React.createElement(VueWrapper, { component: VueComponent, message: 'hi' })
+    const Component = VueInReact(VueComponent)
+    ReactDOM.render(
+      <Component message='hi' reset={jest.fn()} />,
+      document.getElementById('root')
+    )
+    expect(document.getElementById('root').innerHTML).toBe(
+      '<div><span>hi</span><button></button></div>'
     )
   })
 
   it('wraps Vue registered component', () => {
-    expect(__vueraReactResolver(VueRegisteredComponent, { message: 'hi' })).toEqual(
-      React.createElement(VueWrapper, { component: VueRegisteredComponent, message: 'hi' })
+    const Component = VueInReact(VueRegisteredComponent)
+    ReactDOM.render(
+      <Component message='hi' reset={jest.fn()} />,
+      document.getElementById('root')
+    )
+    expect(document.getElementById('root').innerHTML).toBe(
+      '<div><span>hi</span><button></button></div>'
     )
   })
 
   it('wraps Vue single file component', () => {
-    expect(__vueraReactResolver(VueSingleFileComponent, { message: 'hi' })).toEqual(
-      React.createElement(VueWrapper, { component: VueSingleFileComponent, message: 'hi' })
+    const Component = VueInReact(VueSingleFileComponent)
+    ReactDOM.render(
+      <Component message='hi' reset={jest.fn()} />,
+      document.getElementById('root')
+    )
+    expect(document.getElementById('root').innerHTML).toBe(
+      '<div><span>hi</span> <button></button></div>'
     )
   })
 })
