@@ -12,10 +12,7 @@ env:
     - VUE_VERSION=2.4.4
 install:
   - yarn install
-  - yarn add -D react@$REACT_VERSION
-  - yarn add -D react-dom@$REACT_VERSION
-  - yarn add -D vue@$VUE_VERSION
-  - yarn add -D vue-template-compiler@$VUE_VERSION
+  - yarn add -D react@$REACT_VERSION react-dom@$REACT_VERSION vue@$VUE_VERSION vue-template-compiler@$VUE_VERSION
 script:
   - yarn run test:coverage -- --coverageReporters=lcov
   - cat ./coverage/lcov.info | yarn run coveralls
