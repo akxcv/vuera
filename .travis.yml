@@ -17,7 +17,7 @@ install:
   - yarn add -D vue@$VUE_VERSION
   - yarn add -D vue-template-compiler@$VUE_VERSION
 build:
-  - yarn run test -- --coverage --coverageReporters=lcov
+  - yarn run test:coverage -- --coverageReporters=lcov
   - cat ./coverage/lcov.info | yarn run coveralls
 
 branches:

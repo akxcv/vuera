@@ -58,7 +58,7 @@
     "build": "BABEL_ENV=rollup rollup -c",
     "lint": "eslint .",
     "test": "BABEL_ENV=test jest",
-    "test": "yarn run test -- --coverage",
+    "test:coverage": "yarn run test -- --coverage",
     "test:watch": "yarn run test -- --watch",
     "precommit": "lint-staged && yarn run build && git add dist"
   },
