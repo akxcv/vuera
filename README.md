@@ -44,6 +44,11 @@ $ yarn add vuera
 $ npm i -S vuera
 ```
 
+You can also try the library out via [unpkg]:
+```html
+<script src="https://unpkg.com/vuera"></script>
+```
+
 ## Usage
 
 ### Vue in React - Preferred usage
@@ -254,3 +259,4 @@ If you don't want to use the Vue plugin, you still have two ways of using this l
 
 [react]: https://facebook.github.io/react
 [vue]: https://vuejs.org
+[unpkg]: https://unpkg.com

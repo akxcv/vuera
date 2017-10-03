@@ -31,4 +31,16 @@ export default [
       format: 'es',
     },
   }),
+  Object.assign({}, shared, {
+    output: {
+      file: 'dist/vuera.iife.js',
+      format: 'iife',
+      name: 'vuera',
+      globals: {
+        react: 'React',
+        'react-dom': 'ReactDOM',
+        vue: 'Vue',
+      },
+    },
+  }),
 ]

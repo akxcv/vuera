@@ -1,11 +1,12 @@
 {
   "name": "vuera",
-  "version": "0.1.0-rc.1",
+  "version": "0.1.0-rc.2",
   "repository": "akxcv/vuera",
   "author": "Alexander Komarov <ak@akxcv.com>",
   "license": "MIT",
   "main": "dist/vuera.cjs.js",
   "modules": "dist/vuera.es.js",
+  "unpkg": "dist/vuera.iife.js",
   "files": ["dist"],
   "keywords": [
     "vue",
