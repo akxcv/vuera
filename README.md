@@ -1,4 +1,6 @@
-# vuera [![Build Status](https://travis-ci.org/akxcv/vuera.svg?branch=master)](https://travis-ci.org/akxcv/vuera)
+# vuera
+[![Build Status](https://travis-ci.org/akxcv/vuera.svg?branch=master)](https://travis-ci.org/akxcv/vuera)
+[![Coverage Status](https://coveralls.io/repos/github/akxcv/vuera/badge.svg?branch=master)](https://coveralls.io/github/akxcv/vuera?branch=master)
 
 Use [Vue] components in your [React] app:
 ```jsx

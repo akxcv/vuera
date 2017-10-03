@@ -30,6 +30,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-latest": "^6.24.1",
     "babel-preset-react": "^6.24.1",
+    "coveralls": "^3.0.0",
     "eslint": "3.19.0",
     "eslint-config-umbrellio": "^0.4.5",
     "eslint-plugin-import": "^2.7.0",
@@ -57,6 +58,7 @@
     "build": "BABEL_ENV=rollup rollup -c",
     "lint": "eslint .",
     "test": "BABEL_ENV=test jest",
+    "test:coverage": "yarn run test -- --coverage",
     "test:watch": "yarn run test -- --watch",
     "precommit": "lint-staged && yarn run build && git add dist"
   },
