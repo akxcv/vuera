@@ -6,40 +6,24 @@ import React from 'react'
 import MyVueComponent from './MyVueComponent.vue'
 
 export default props =>
-  <div>
-    <h1>I'm a react component</h1>
     <div>
-      <MyVueComponent message={props.message} handleReset={props.handleReset}>
-        {props.contents}
-      </MyVueComponent>
+      <MyVueComponent message={props.message} handleReset={props.handleReset} />
     </div>
-  </div>
 ```
 
 Or use [React] components in your [Vue] app:
 ```vue
 <template>
   <div>
-    <h1>I'm a Vue component</h1>
-    <my-react-component :message="message" @reset="reset">
-      <span>Inside React</span>
-    </my-react-component>
+    <my-react-component :message="message" @reset="reset" />
   </div>
 </template>
 
 <script>
-  import { ReactWrapper } from 'vuera'
   import MyReactComponent from './MyReactComponent'
 
   export default {
-    data () {
-      message: 'Hello from React!',
-    },
-    methods: {
-      reset () {
-        this.message = ''
-      }
-    },
+    /* data, methods, etc */
     components: { 'my-react-component': MyReactComponent },
   }
 </script>
@@ -47,7 +31,7 @@ Or use [React] components in your [Vue] app:
 
 ## Use cases
 
-- 👨‍👩‍👧 Using both Vue and React in an app
+- 👨‍👩‍👧 Using both Vue and React in one app
 - 🏃 Migrating from React to Vue or from Vue to React
 
 ## Installation
@@ -60,6 +44,12 @@ $ yarn add vuera
 $ npm i -S vuera
 ```
 
+## Usage
+
+### Vue in React - Preferred usage
+
+The preferred way to use Vue inside of a React app is to use a Babel plugin.
+
 Add `vuera/babel` to `plugins` section of your `.babelrc`:
 ```json
 {
@@ -68,12 +58,7 @@ Add `vuera/babel` to `plugins` section of your `.babelrc`:
 }
 ```
 
-## Usage
-
-### Vue in React
-
-Using a Vue component in a React app is very simple! All you need to do is import your Vue component
-normally and just use it in JSX as you would use a React component:
+Now, just use your Vue components like you would use your React components!
 
 ```jsx
 import React from 'react'
@@ -89,53 +74,40 @@ export default () => (
 )
 ```
 
-Functions work as usual. You can also pass any valid React elements as children.
+**NOTE**: If your're not using JSX, you *must* name your React import `React` for the babel plugin
+to work.
 
-If you don't want to use the babel plugin, you can still use a Vue component inside your React app
-like so:
-
-```jsx
+```js
+// yes
 import React from 'react'
-import { VueWrapper } from 'vuera'
-import MyVueComponent from './MyVueComponent.vue'
-
-export default () => (
-  <div>
-    <h1>I'm a react component</h1>
-    <div>
-      <VueWrapper
-        component={MyVueComponent}
-        message='Hello from Vue!'
-      />
-    </div>
-  </div>
-)
+// no
+import react from 'react'
+import Penguin from 'react'
 ```
 
-### React in Vue
+### React in Vue - Preferred usage
 
-Using a React component in a Vue app is very simple, too! First, enable our Vue plugin:
+The preferred way to use React inside of a Vue app is to use a Vue plugin.
 
 ```js
 import Vue from 'vue'
-import { VuePlugin } from 'vuera'
+import { VuePlugin } from 'vuera'\
+
 Vue.use(VuePlugin)
 /* ... */
 ```
 
-Now just import your React component normally, register it in your Vue component as you would
-register another Vue component, and use it:
+Now, use your React components like you would normally use your Vue components!
 
 ```vue
 <template>
   <div>
     <h1>I'm a Vue component</h1>
-    <my-react-component :message="message" @reset="reset"></my-react-component>
+    <my-react-component :message="message" @reset="reset" />
   </div>
 </template>
 
 <script>
-  import { ReactWrapper } from 'vuera'
   import MyReactComponent from './MyReactComponent'
 
   export default {
@@ -152,37 +124,8 @@ register another Vue component, and use it:
 </script>
 ```
 
-You can also pass any valid Vue elements as chilren.
-
-You can also use React components without the plugin, here's how:
-
-```vue
-<template>
-  <div>
-    <h1>I'm a Vue component</h1>
-    <div>
-      <react :component="component" :message="message"></react>
-    </div>
-  </div>
-</template>
-
-<script>
-  import { ReactWrapper } from 'vuera'
-  import MyReactComponent from './MyReactComponent'
-
-  export default {
-    data () {
-      component: MyReactComponent,
-      message: 'Hello from React!',
-    },
-    components: { react: ReactWrapper }
-  }
-</script>
-```
-
-**NOTE**: If you are using Vue < 2.4, you have to pass all props to your React components through
-a special prop called `passedProps`, since earlier versions of Vue require to register every
-possible prop in component configuration. Example:
+**NOTE**: If you're using Vue < 2.4, you *must* pass all props to your React components via a
+special prop called `passedProps`:
 
 ```vue
 <template>
@@ -217,6 +160,97 @@ possible prop in component configuration. Example:
   }
 </script>
 ```
+
+### Vue in React - without the Babel plugin
+
+If you don't want to use the Babel plugin, you still have two ways of using this library.
+
+1. Use a wrapper component:
+
+```jsx
+import React from 'react'
+import { VueWrapper } from 'vuera'
+import MyVueComponent from './MyVueComponent.vue'
+
+export default () => (
+  <div>
+    <VueWrapper
+      component={MyVueComponent}
+      message='Hello from Vue!'
+    />
+  </div>
+)
+```
+
+2. Or use the HOC API:
+
+```jsx
+import React from 'react'
+import { VueInReact } from 'vuera'
+import MyVueComponent from './MyVueComponent.vue
+
+export default () => {
+  const Component = VueInReact(MyVueComponent)
+  return (
+    <div>
+      <Component message='Hello from Vue!' />
+    </div>
+  )
+}
+```
+
+### React in Vue - without the Vue plugin
+
+If you don't want to use the Vue plugin, you still have two ways of using this library.
+
+1. Use a wrapper component:
+
+```vue
+<template>
+  <div>
+    <react :component="component" :message="message" />
+  </div>
+</template>
+
+<script>
+  import { ReactWrapper } from 'vuera'
+  import MyReactComponent from './MyReactComponent'
+
+  export default {
+    data () {
+      component: MyReactComponent,
+      message: 'Hello from React!',
+    },
+    components: { react: ReactWrapper }
+  }
+</script>
+```
+
+2. Use the HOC API:
+
+```vue
+<template>
+  <div>
+    <my-react-component :message="message" />
+  </div>
+</template>
+
+<script>
+  import { ReactInVue } from 'vuera'
+  import MyReactComponent from './MyReactComponent'
+
+  export default {
+    data () {
+      message: 'Hello from React!',
+    },
+    components: { 'my-react-component': ReactInVue(MyReactComponent) }
+  }
+</script>
+```
+
+## License
+
+[MIT](http://opensource.org/licenses/MIT)
 
 [react]: https://facebook.github.io/react
 [vue]: https://vuejs.org
