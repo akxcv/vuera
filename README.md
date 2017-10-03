@@ -8,9 +8,9 @@ import React from 'react'
 import MyVueComponent from './MyVueComponent.vue'
 
 export default props =>
-    <div>
-      <MyVueComponent message={props.message} handleReset={props.handleReset} />
-    </div>
+  <div>
+    <MyVueComponent message={props.message} handleReset={props.handleReset} />
+  </div>
 ```
 
 Or use [React] components in your [Vue] app:
@@ -79,17 +79,6 @@ export default () => (
     </div>
   </div>
 )
-```
-
-**NOTE**: If your're not using JSX, you *must* name your React import `React` for the babel plugin
-to work.
-
-```js
-// yes
-import React from 'react'
-// no
-import react from 'react'
-import Penguin from 'react'
 ```
 
 ### React in Vue - Preferred usage
