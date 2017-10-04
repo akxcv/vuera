@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import * as babel from 'babel-core'
 import prettier from 'prettier'
-import plugin from '../dist/babel'
+import plugin from '../babel'
 
 const getFixture = name => ({
   source: path.join(__dirname, `fixtures/babel/${name}.js`),
