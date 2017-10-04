@@ -63,7 +63,11 @@ module.exports = function ({ types }) {
           const reactName = defaultImport.local.name
 
           const { object, property } = callee
-          if (!(object.name === reactName && property.name === 'createElement')) { return }
+          if (
+            !(object.name === reactName && property.name === 'createElement')
+          ) {
+            return
+          }
 
           processCreateElement(
             maybeReactComponent,

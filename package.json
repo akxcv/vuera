@@ -1,13 +1,13 @@
 {
   "name": "vuera",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "repository": "akxcv/vuera",
   "author": "Alexander Komarov <ak@akxcv.com>",
   "license": "MIT",
   "main": "dist/vuera.cjs.js",
   "modules": "dist/vuera.es.js",
   "unpkg": "dist/vuera.iife.js",
-  "files": ["dist"],
+  "files": ["dist", "babel.js"],
   "keywords": [
     "vue",
     "react",
@@ -67,6 +67,6 @@
     "src/**/*.js": ["prettier --write", "eslint --fix", "git add"],
     "tests/**/*.js": ["prettier --write", "eslint --fix", "git add"],
     "/*.js": ["prettier --write", "eslint --fix", "git add"],
-    "dist/babel.js": ["prettier --write", "eslint --fix", "git add"]
+    "babel.js": ["prettier --write", "eslint --fix", "git add"]
   }
 }
