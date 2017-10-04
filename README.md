@@ -87,7 +87,7 @@ The preferred way to use React inside of a Vue app is to use a Vue plugin.
 
 ```js
 import Vue from 'vue'
-import { VuePlugin } from 'vuera'\
+import { VuePlugin } from 'vuera'
 
 Vue.use(VuePlugin)
 /* ... */
