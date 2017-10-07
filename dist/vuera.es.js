@@ -319,15 +319,19 @@ var VueContainer = function (_React$Component) {
   createClass(VueContainer, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
-      if (this.currentVueComponent !== nextProps.component) {
-        this.updateVueComponent(this.props.component, nextProps.component);
+      var component = nextProps.component,
+          props = objectWithoutProperties(nextProps, ['component']);
+
+
+      if (this.currentVueComponent !== component) {
+        this.updateVueComponent(this.props.component, component);
       }
       /**
        * NOTE: we're not comparing this.props and nextProps here, because I didn't want to write a
        * function for deep object comparison. I don't know if this hurts performance a lot, maybe
        * we do need to compare those objects.
        */
-      Object.assign(this.vueInstance.$data, nextProps);
+      Object.assign(this.vueInstance.$data, props);
     }
   }, {
     key: 'componentWillUnmount',
@@ -351,18 +355,17 @@ var VueContainer = function (_React$Component) {
 
       var _reactThisBinding$pro = reactThisBinding.props,
           component = _reactThisBinding$pro.component,
-          children = _reactThisBinding$pro.children,
-          props = objectWithoutProperties(_reactThisBinding$pro, ['component', 'children']);
+          props = objectWithoutProperties(_reactThisBinding$pro, ['component']);
 
       // `this` refers to Vue instance in the constructor
 
       reactThisBinding.vueInstance = new Vue({
         el: targetElement,
-        data: _extends({}, props),
+        data: props,
         render: function render(createElement) {
           return createElement(VUE_COMPONENT_NAME, {
             props: this.$data
-          }, [wrapReactChildren(createElement, children)]);
+          }, [wrapReactChildren(createElement, this.children)]);
         },
 
         components: (_components = {}, defineProperty(_components, VUE_COMPONENT_NAME, component), defineProperty(_components, 'vuera-internal-react-wrapper', ReactWrapper), _components)
@@ -388,6 +391,14 @@ var VueContainer = function (_React$Component) {
   return VueContainer;
 }(React.Component);
 
+var wrapVueChildren = function wrapVueChildren(children) {
+  return {
+    render: function render(createElement) {
+      return createElement('div', children);
+    }
+  };
+};
+
 var makeReactContainer = function makeReactContainer(Component) {
   var _class, _temp;
 
@@ -411,19 +422,21 @@ var makeReactContainer = function makeReactContainer(Component) {
     createClass(ReactInVue, [{
       key: 'render',
       value: function render() {
-        return React.createElement(Component, this.state);
+        var _state = this.state,
+            children = _state.children,
+            rest = objectWithoutProperties(_state, ['children']);
+
+        var wrappedChildren = wrapVueChildren(children);
+
+        return React.createElement(
+          Component,
+          rest,
+          React.createElement(VueContainer, { component: wrappedChildren })
+        );
       }
     }]);
     return ReactInVue;
   }(React.Component), _class.displayName = 'ReactInVue' + (Component.displayName || Component.name || 'Component'), _temp;
-};
-
-var wrapVueChildren = function wrapVueChildren(children) {
-  return {
-    render: function render(createElement) {
-      return createElement('div', children);
-    }
-  };
 };
 
 var ReactWrapper = {
@@ -437,16 +450,12 @@ var ReactWrapper = {
       var _this2 = this;
 
       var Component = makeReactContainer(component);
-      var wrappedChildren = wrapVueChildren(this.$slots.default);
-      ReactDOM.render(React.createElement(
-        Component,
-        _extends({}, this.$props.passedProps, this.$attrs, this.$listeners, {
-          ref: function ref(_ref) {
-            return _this2.reactComponentRef = _ref;
-          }
-        }),
-        React.createElement(VueContainer, { component: wrappedChildren })
-      ), this.$refs.react);
+      ReactDOM.render(React.createElement(Component, _extends({}, this.$props.passedProps, this.$attrs, this.$listeners, {
+        children: this.$slots.default,
+        ref: function ref(_ref) {
+          return _this2.reactComponentRef = _ref;
+        }
+      })), this.$refs.react);
     }
   },
   mounted: function mounted() {
@@ -454,6 +463,13 @@ var ReactWrapper = {
   },
   beforeDestroy: function beforeDestroy() {
     ReactDOM.unmountComponentAtNode(this.$refs.react);
+  },
+  updated: function updated() {
+    /**
+     * AFAIK, this is the only way to update children. It doesn't seem to be possible to watch
+     * `$slots` or `$children`.
+     */
+    this.reactComponentRef.setState({ children: this.$slots.default });
   },
 
   inheritAttrs: false,
@@ -549,8 +565,8 @@ function ReactResolver$$1(component) {
  * This function gets imported by the babel plugin. It wraps a suspected React element and, if it
  * isn't a valid React element, wraps it into a Vue container.
  */
-function babelReactResolver$$1(component, props) {
-  return isReactComponent(component) ? React.createElement(component, props) : React.createElement(VueContainer, Object.assign({ component: component }, props));
+function babelReactResolver$$1(component, props, children) {
+  return isReactComponent(component) ? React.createElement(component, props, children) : React.createElement(VueContainer, Object.assign({ component: component }, props), children);
 }
 
 export { ReactWrapper, VueContainer as VueWrapper, babelReactResolver$$1 as __vueraReactResolver, VuePlugin, ReactResolver$$1 as VueInReact, VueResolver$$1 as ReactInVue };

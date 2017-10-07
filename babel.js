@@ -1,12 +1,6 @@
 /* eslint-env node */
 
-function processCreateElement (
-  maybeReactComponent,
-  maybeProps,
-  file,
-  path,
-  types
-) {
+function processCreateElement (maybeReactComponent, args, file, path, types) {
   // If the first argument is a string (built-in React component), return
   if (maybeReactComponent.type === 'StringLiteral') return
 
@@ -28,10 +22,7 @@ function processCreateElement (
 
   // Replace React.createElement(component, props) with our helper function
   path.replaceWith(
-    types.callExpression(types.identifier('__vueraReactResolver'), [
-      maybeReactComponent,
-      maybeProps,
-    ])
+    types.callExpression(types.identifier('__vueraReactResolver'), [maybeReactComponent, ...args])
   )
 }
 
@@ -40,8 +31,7 @@ module.exports = function ({ types }) {
     visitor: {
       CallExpression (path, { file }) {
         const callee = path.node.callee
-        const maybeReactComponent = path.node.arguments[0]
-        const maybeProps = path.node.arguments[1]
+        const [maybeReactComponent, ...args] = path.node.arguments
 
         // Check if 'react' module was imported in current file, return if not
         const reactImport = file.path.node.body.find(
@@ -63,40 +53,21 @@ module.exports = function ({ types }) {
           const reactName = defaultImport.local.name
 
           const { object, property } = callee
-          if (
-            !(object.name === reactName && property.name === 'createElement')
-          ) {
+          if (!(object.name === reactName && property.name === 'createElement')) {
             return
           }
 
-          processCreateElement(
-            maybeReactComponent,
-            maybeProps,
-            file,
-            path,
-            types
-          )
+          processCreateElement(maybeReactComponent, args, file, path, types)
         }
         // Check if CallExpression is React's 'createElement'
-        if (
-          callee.type === 'Identifier' &&
-          callee.name !== '__vueraReactResolver'
-        ) {
+        if (callee.type === 'Identifier' && callee.name !== '__vueraReactResolver') {
           // Return unless createElement was imported
           const createElementImport = reactImport.specifiers.find(
-            x =>
-              x.type === 'ImportSpecifier' &&
-              x.imported.name === 'createElement'
+            x => x.type === 'ImportSpecifier' && x.imported.name === 'createElement'
           )
           if (!createElementImport) return
 
-          processCreateElement(
-            maybeReactComponent,
-            maybeProps,
-            file,
-            path,
-            types
-          )
+          processCreateElement(maybeReactComponent, args, file, path, types)
         }
       },
     },

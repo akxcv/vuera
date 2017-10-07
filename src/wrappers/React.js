@@ -2,6 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import VueWrapper from './Vue'
 
+const wrapVueChildren = children => ({
+  render: createElement => createElement('div', children),
+})
+
 const makeReactContainer = Component => {
   return class ReactInVue extends React.Component {
     static displayName = `ReactInVue${Component.displayName || Component.name || 'Component'}`
@@ -18,14 +22,17 @@ const makeReactContainer = Component => {
     }
 
     render () {
-      return <Component {...this.state} />
+      const { children, ...rest } = this.state
+      const wrappedChildren = wrapVueChildren(children)
+
+      return (
+        <Component {...rest}>
+          <VueWrapper component={wrappedChildren} />
+        </Component>
+      )
     }
   }
 }
-
-const wrapVueChildren = children => ({
-  render: createElement => createElement('div', children),
-})
 
 export default {
   props: ['component', 'passedProps'],
@@ -35,16 +42,14 @@ export default {
   methods: {
     mountReactComponent (component) {
       const Component = makeReactContainer(component)
-      const wrappedChildren = wrapVueChildren(this.$slots.default)
       ReactDOM.render(
         <Component
           {...this.$props.passedProps}
           {...this.$attrs}
           {...this.$listeners}
+          children={this.$slots.default}
           ref={ref => (this.reactComponentRef = ref)}
-        >
-          <VueWrapper component={wrappedChildren} />
-        </Component>,
+        />,
         this.$refs.react
       )
     },
@@ -54,6 +59,13 @@ export default {
   },
   beforeDestroy () {
     ReactDOM.unmountComponentAtNode(this.$refs.react)
+  },
+  updated () {
+    /**
+     * AFAIK, this is the only way to update children. It doesn't seem to be possible to watch
+     * `$slots` or `$children`.
+     */
+    this.reactComponentRef.setState({ children: this.$slots.default })
   },
   inheritAttrs: false,
   watch: {

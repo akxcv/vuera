@@ -33,15 +33,17 @@ export default class VueContainer extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (this.currentVueComponent !== nextProps.component) {
-      this.updateVueComponent(this.props.component, nextProps.component)
+    const { component, ...props } = nextProps
+
+    if (this.currentVueComponent !== component) {
+      this.updateVueComponent(this.props.component, component)
     }
     /**
      * NOTE: we're not comparing this.props and nextProps here, because I didn't want to write a
      * function for deep object comparison. I don't know if this hurts performance a lot, maybe
      * we do need to compare those objects.
      */
-    Object.assign(this.vueInstance.$data, nextProps)
+    Object.assign(this.vueInstance.$data, props)
   }
 
   componentWillUnmount () {
@@ -57,19 +59,19 @@ export default class VueContainer extends React.Component {
    * @param {ReactInstance} reactThisBinding - current instance of VueContainer
    */
   createVueInstance (targetElement, reactThisBinding) {
-    const { component, children, ...props } = reactThisBinding.props
+    const { component, ...props } = reactThisBinding.props
 
     // `this` refers to Vue instance in the constructor
     reactThisBinding.vueInstance = new Vue({
       el: targetElement,
-      data: { ...props },
+      data: props,
       render (createElement) {
         return createElement(
           VUE_COMPONENT_NAME,
           {
             props: this.$data,
           },
-          [wrapReactChildren(createElement, children)]
+          [wrapReactChildren(createElement, this.children)]
         )
       },
       components: {

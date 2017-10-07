@@ -13,8 +13,8 @@ export default function ReactResolver (component) {
  * This function gets imported by the babel plugin. It wraps a suspected React element and, if it
  * isn't a valid React element, wraps it into a Vue container.
  */
-export function babelReactResolver (component, props) {
+export function babelReactResolver (component, props, children) {
   return isReactComponent(component)
-    ? React.createElement(component, props)
-    : React.createElement(VueWrapper, Object.assign({ component }, props))
+    ? React.createElement(component, props, children)
+    : React.createElement(VueWrapper, Object.assign({ component }, props), children)
 }
