@@ -2,10 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import VueWrapper from './Vue'
 
-const wrapVueChildren = children => ({
-  render: createElement => createElement('div', children),
-})
-
 const makeReactContainer = Component => {
   return class ReactInVue extends React.Component {
     static displayName = `ReactInVue${Component.displayName || Component.name || 'Component'}`
@@ -21,9 +17,15 @@ const makeReactContainer = Component => {
       this.state = props
     }
 
+    wrapVueChildren (children) {
+      return {
+        render: createElement => createElement('div', children),
+      }
+    }
+
     render () {
       const { children, ...rest } = this.state
-      const wrappedChildren = wrapVueChildren(children)
+      const wrappedChildren = this.wrapVueChildren(children)
 
       return (
         <Component {...rest}>

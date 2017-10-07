@@ -1,7 +1,7 @@
 {
   "name": "vuera",
   "description": "Use React in Vue and Vue in React",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "repository": "akxcv/vuera",
   "author": "Alexander Komarov <ak@akxcv.com>",
   "license": "MIT",
@@ -9,14 +9,7 @@
   "modules": "dist/vuera.es.js",
   "unpkg": "dist/vuera.iife.js",
   "files": ["dist", "babel.js"],
-  "keywords": [
-    "vue",
-    "react",
-    "interop",
-    "adapter",
-    "migrate",
-    "seamless-integration"
-  ],
+  "keywords": ["vue", "react", "interop", "adapter", "migrate", "seamless-integration"],
   "peerDependencies": {
     "react": ">= 15.2.0",
     "react-dom": ">= 15.2.0",

@@ -397,14 +397,6 @@ var VueContainer = function (_React$Component) {
   return VueContainer;
 }(React.Component);
 
-var wrapVueChildren = function wrapVueChildren(children) {
-  return {
-    render: function render(createElement) {
-      return createElement('div', children);
-    }
-  };
-};
-
 var makeReactContainer = function makeReactContainer(Component) {
   var _class, _temp;
 
@@ -426,13 +418,22 @@ var makeReactContainer = function makeReactContainer(Component) {
     }
 
     createClass(ReactInVue, [{
+      key: 'wrapVueChildren',
+      value: function wrapVueChildren(children) {
+        return {
+          render: function render(createElement) {
+            return createElement('div', children);
+          }
+        };
+      }
+    }, {
       key: 'render',
       value: function render() {
         var _state = this.state,
             children = _state.children,
             rest = objectWithoutProperties(_state, ['children']);
 
-        var wrappedChildren = wrapVueChildren(children);
+        var wrappedChildren = this.wrapVueChildren(children);
 
         return React.createElement(
           Component,
