@@ -2,6 +2,8 @@ import React from 'react'
 import Vue from 'vue'
 import ReactWrapper from './React'
 
+const VUE_COMPONENT_NAME = 'vuera-internal-component-name'
+
 const wrapReactChildren = (createElement, children) =>
   createElement('vuera-internal-react-wrapper', {
     props: {
@@ -14,23 +16,34 @@ export default class VueContainer extends React.Component {
     super(props)
 
     /**
+     * We have to track the current Vue component so that we can reliably catch updates to the
+     * `component` prop.
+     */
+    this.currentVueComponent = props.component
+
+    /**
      * Modify createVueInstance function to pass this binding correctly. Doing this in the
      * constructor to avoid instantiating functions in render.
      */
     const createVueInstance = this.createVueInstance
     const self = this
-    this.createVueInstance = function (element) {
-      createVueInstance(element, self)
+    this.createVueInstance = function (element, component, prevComponent) {
+      createVueInstance(element, self, component, prevComponent)
     }
   }
 
   componentWillReceiveProps (nextProps) {
+    const { component, ...props } = nextProps
+
+    if (this.currentVueComponent !== component) {
+      this.updateVueComponent(this.props.component, component)
+    }
     /**
      * NOTE: we're not comparing this.props and nextProps here, because I didn't want to write a
      * function for deep object comparison. I don't know if this hurts performance a lot, maybe
      * we do need to compare those objects.
      */
-    Object.assign(this.vueInstance.$data, nextProps)
+    Object.assign(this.vueInstance.$data, props)
   }
 
   componentWillUnmount () {
@@ -46,30 +59,36 @@ export default class VueContainer extends React.Component {
    * @param {ReactInstance} reactThisBinding - current instance of VueContainer
    */
   createVueInstance (targetElement, reactThisBinding) {
-    // If the Vue instance has already been initialized, do nothing
-    if (reactThisBinding.vue) return
+    const { component, ...props } = reactThisBinding.props
 
-    const { component, children, ...props } = reactThisBinding.props
-    // If component has a name, use it; otherwise assign an arbitrary name
-    const componentName = component.name || 'vue-component'
     // `this` refers to Vue instance in the constructor
     reactThisBinding.vueInstance = new Vue({
       el: targetElement,
-      data: { ...props },
+      data: props,
       render (createElement) {
         return createElement(
-          componentName,
+          VUE_COMPONENT_NAME,
           {
             props: this.$data,
           },
-          [wrapReactChildren(createElement, children)]
+          [wrapReactChildren(createElement, this.children)]
         )
       },
       components: {
-        [componentName]: component,
+        [VUE_COMPONENT_NAME]: component,
         'vuera-internal-react-wrapper': ReactWrapper,
       },
     })
+  }
+
+  updateVueComponent (prevComponent, nextComponent) {
+    this.currentVueComponent = nextComponent
+
+    /**
+     * Replace the component in the Vue instance and update it.
+     */
+    this.vueInstance.$options.components[VUE_COMPONENT_NAME] = nextComponent
+    this.vueInstance.$forceUpdate()
   }
 
   render () {

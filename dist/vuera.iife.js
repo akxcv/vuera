@@ -277,6 +277,8 @@ var slicedToArray = function () {
   };
 }();
 
+var VUE_COMPONENT_NAME = 'vuera-internal-component-name';
+
 var wrapReactChildren = function wrapReactChildren(createElement, children) {
   return createElement('vuera-internal-react-wrapper', {
     props: {
@@ -298,15 +300,21 @@ var VueContainer = function (_React$Component) {
     classCallCheck(this, VueContainer);
 
     /**
-     * Modify createVueInstance function to pass this binding correctly. Doing this in the
-     * constructor to avoid instantiating functions in render.
+     * We have to track the current Vue component so that we can reliably catch updates to the
+     * `component` prop.
      */
     var _this = possibleConstructorReturn(this, (VueContainer.__proto__ || Object.getPrototypeOf(VueContainer)).call(this, props));
 
+    _this.currentVueComponent = props.component;
+
+    /**
+     * Modify createVueInstance function to pass this binding correctly. Doing this in the
+     * constructor to avoid instantiating functions in render.
+     */
     var createVueInstance = _this.createVueInstance;
     var self = _this;
-    _this.createVueInstance = function (element) {
-      createVueInstance(element, self);
+    _this.createVueInstance = function (element, component, prevComponent) {
+      createVueInstance(element, self, component, prevComponent);
     };
     return _this;
   }
@@ -314,12 +322,19 @@ var VueContainer = function (_React$Component) {
   createClass(VueContainer, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
+      var component = nextProps.component,
+          props = objectWithoutProperties(nextProps, ['component']);
+
+
+      if (this.currentVueComponent !== component) {
+        this.updateVueComponent(this.props.component, component);
+      }
       /**
        * NOTE: we're not comparing this.props and nextProps here, because I didn't want to write a
        * function for deep object comparison. I don't know if this hurts performance a lot, maybe
        * we do need to compare those objects.
        */
-      Object.assign(this.vueInstance.$data, nextProps);
+      Object.assign(this.vueInstance.$data, props);
     }
   }, {
     key: 'componentWillUnmount',
@@ -341,28 +356,34 @@ var VueContainer = function (_React$Component) {
     value: function createVueInstance(targetElement, reactThisBinding) {
       var _components;
 
-      // If the Vue instance has already been initialized, do nothing
-      if (reactThisBinding.vue) return;
-
       var _reactThisBinding$pro = reactThisBinding.props,
           component = _reactThisBinding$pro.component,
-          children = _reactThisBinding$pro.children,
-          props = objectWithoutProperties(_reactThisBinding$pro, ['component', 'children']);
-      // If component has a name, use it; otherwise assign an arbitrary name
+          props = objectWithoutProperties(_reactThisBinding$pro, ['component']);
 
-      var componentName = component.name || 'vue-component';
       // `this` refers to Vue instance in the constructor
+
       reactThisBinding.vueInstance = new Vue({
         el: targetElement,
-        data: _extends({}, props),
+        data: props,
         render: function render(createElement) {
-          return createElement(componentName, {
+          return createElement(VUE_COMPONENT_NAME, {
             props: this.$data
-          }, [wrapReactChildren(createElement, children)]);
+          }, [wrapReactChildren(createElement, this.children)]);
         },
 
-        components: (_components = {}, defineProperty(_components, componentName, component), defineProperty(_components, 'vuera-internal-react-wrapper', ReactWrapper), _components)
+        components: (_components = {}, defineProperty(_components, VUE_COMPONENT_NAME, component), defineProperty(_components, 'vuera-internal-react-wrapper', ReactWrapper), _components)
       });
+    }
+  }, {
+    key: 'updateVueComponent',
+    value: function updateVueComponent(prevComponent, nextComponent) {
+      this.currentVueComponent = nextComponent;
+
+      /**
+       * Replace the component in the Vue instance and update it.
+       */
+      this.vueInstance.$options.components[VUE_COMPONENT_NAME] = nextComponent;
+      this.vueInstance.$forceUpdate();
     }
   }, {
     key: 'render',
@@ -394,21 +415,32 @@ var makeReactContainer = function makeReactContainer(Component) {
     }
 
     createClass(ReactInVue, [{
+      key: 'wrapVueChildren',
+      value: function wrapVueChildren(children) {
+        return {
+          render: function render(createElement) {
+            return createElement('div', children);
+          }
+        };
+      }
+    }, {
       key: 'render',
       value: function render() {
-        return React.createElement(Component, this.state);
+        var _state = this.state,
+            children = _state.children,
+            rest = objectWithoutProperties(_state, ['children']);
+
+        var wrappedChildren = this.wrapVueChildren(children);
+
+        return React.createElement(
+          Component,
+          rest,
+          React.createElement(VueContainer, { component: wrappedChildren })
+        );
       }
     }]);
     return ReactInVue;
   }(React.Component), _class.displayName = 'ReactInVue' + (Component.displayName || Component.name || 'Component'), _temp;
-};
-
-var wrapVueChildren = function wrapVueChildren(children) {
-  return {
-    render: function render(createElement) {
-      return createElement('div', children);
-    }
-  };
 };
 
 var ReactWrapper = {
@@ -418,27 +450,30 @@ var ReactWrapper = {
   },
 
   methods: {
-    mountReactComponent: function mountReactComponent() {
+    mountReactComponent: function mountReactComponent(component) {
       var _this2 = this;
 
-      var Component = makeReactContainer(this.$props.component);
-      var wrappedChildren = wrapVueChildren(this.$slots.default);
-      ReactDOM.render(React.createElement(
-        Component,
-        _extends({}, this.$props.passedProps, this.$attrs, this.$listeners, {
-          ref: function ref(_ref) {
-            return _this2.reactComponentRef = _ref;
-          }
-        }),
-        React.createElement(VueContainer, { component: wrappedChildren })
-      ), this.$refs.react);
+      var Component = makeReactContainer(component);
+      ReactDOM.render(React.createElement(Component, _extends({}, this.$props.passedProps, this.$attrs, this.$listeners, {
+        children: this.$slots.default,
+        ref: function ref(_ref) {
+          return _this2.reactComponentRef = _ref;
+        }
+      })), this.$refs.react);
     }
   },
   mounted: function mounted() {
-    this.mountReactComponent();
+    this.mountReactComponent(this.$props.component);
   },
   beforeDestroy: function beforeDestroy() {
     ReactDOM.unmountComponentAtNode(this.$refs.react);
+  },
+  updated: function updated() {
+    /**
+     * AFAIK, this is the only way to update children. It doesn't seem to be possible to watch
+     * `$slots` or `$children`.
+     */
+    this.reactComponentRef.setState({ children: this.$slots.default });
   },
 
   inheritAttrs: false,
@@ -449,6 +484,11 @@ var ReactWrapper = {
       },
 
       deep: true
+    },
+    '$props.component': {
+      handler: function handler(newValue) {
+        this.mountReactComponent(newValue);
+      }
     },
     $listeners: {
       handler: function handler() {
@@ -529,8 +569,8 @@ function ReactResolver$$1(component) {
  * This function gets imported by the babel plugin. It wraps a suspected React element and, if it
  * isn't a valid React element, wraps it into a Vue container.
  */
-function babelReactResolver$$1(component, props) {
-  return isReactComponent(component) ? React.createElement(component, props) : React.createElement(VueContainer, Object.assign({ component: component }, props));
+function babelReactResolver$$1(component, props, children) {
+  return isReactComponent(component) ? React.createElement(component, props, children) : React.createElement(VueContainer, Object.assign({ component: component }, props), children);
 }
 
 exports.ReactWrapper = ReactWrapper;

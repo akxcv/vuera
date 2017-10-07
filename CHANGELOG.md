@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.1.2] - 2017-10-07
+### Fixed
+- Issues with `component` prop updates. (#5)
+- Issues with children in Babel plugin.
+- Issues with children updates.
+
 ## [0.1.1] - 2017-10-04
 ### Fixed
 - Babel plugin could not be imported as specified in README. (#5)

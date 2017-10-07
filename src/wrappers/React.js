@@ -4,9 +4,7 @@ import VueWrapper from './Vue'
 
 const makeReactContainer = Component => {
   return class ReactInVue extends React.Component {
-    static displayName = `ReactInVue${Component.displayName ||
-      Component.name ||
-      'Component'}`
+    static displayName = `ReactInVue${Component.displayName || Component.name || 'Component'}`
 
     constructor (props) {
       super(props)
@@ -19,15 +17,24 @@ const makeReactContainer = Component => {
       this.state = props
     }
 
+    wrapVueChildren (children) {
+      return {
+        render: createElement => createElement('div', children),
+      }
+    }
+
     render () {
-      return <Component {...this.state} />
+      const { children, ...rest } = this.state
+      const wrappedChildren = this.wrapVueChildren(children)
+
+      return (
+        <Component {...rest}>
+          <VueWrapper component={wrappedChildren} />
+        </Component>
+      )
     }
   }
 }
-
-const wrapVueChildren = children => ({
-  render: createElement => createElement('div', children),
-})
 
 export default {
   props: ['component', 'passedProps'],
@@ -35,27 +42,32 @@ export default {
     return createElement('div', { ref: 'react' })
   },
   methods: {
-    mountReactComponent () {
-      const Component = makeReactContainer(this.$props.component)
-      const wrappedChildren = wrapVueChildren(this.$slots.default)
+    mountReactComponent (component) {
+      const Component = makeReactContainer(component)
       ReactDOM.render(
         <Component
           {...this.$props.passedProps}
           {...this.$attrs}
           {...this.$listeners}
+          children={this.$slots.default}
           ref={ref => (this.reactComponentRef = ref)}
-        >
-          <VueWrapper component={wrappedChildren} />
-        </Component>,
+        />,
         this.$refs.react
       )
     },
   },
   mounted () {
-    this.mountReactComponent()
+    this.mountReactComponent(this.$props.component)
   },
   beforeDestroy () {
     ReactDOM.unmountComponentAtNode(this.$refs.react)
+  },
+  updated () {
+    /**
+     * AFAIK, this is the only way to update children. It doesn't seem to be possible to watch
+     * `$slots` or `$children`.
+     */
+    this.reactComponentRef.setState({ children: this.$slots.default })
   },
   inheritAttrs: false,
   watch: {
@@ -64,6 +76,11 @@ export default {
         this.reactComponentRef.setState({ ...this.$attrs })
       },
       deep: true,
+    },
+    '$props.component': {
+      handler (newValue) {
+        this.mountReactComponent(newValue)
+      },
     },
     $listeners: {
       handler () {
