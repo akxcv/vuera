@@ -1,8 +1,8 @@
-/* global document */
-
 import React from 'react'
 import Vue from 'vue'
 import ReactWrapper from './React'
+
+const VUE_COMPONENT_NAME = 'vuera-internal-component-name'
 
 const wrapReactChildren = (createElement, children) =>
   createElement('vuera-internal-react-wrapper', {
@@ -13,12 +13,13 @@ const wrapReactChildren = (createElement, children) =>
 
 export default class VueContainer extends React.Component {
   constructor (props) {
-    /**
-     * We have to "mark" the component so that we can detect if the prop has
-     * been updated later. This mutates the actual component.
-     */
-    props.component.__vueraMark = true
     super(props)
+
+    /**
+     * We have to track the current Vue component so that we can reliably catch updates to the
+     * `component` prop.
+     */
+    this.currentVueComponent = props.component
 
     /**
      * Modify createVueInstance function to pass this binding correctly. Doing this in the
@@ -32,16 +33,8 @@ export default class VueContainer extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (!nextProps.component.__vueraMark) {
-      /**
-       * If the `component` prop has changed, we have to clear the innerHTML
-       * of the vue ref before creating a new Vue instance.
-       */
-      this.vueRef.innerHTML = ''
-      const prevComponent = this.props.component
-      Vue.nextTick(() => {
-        this.createVueInstance(this.vueRef, nextProps.component, prevComponent)
-      })
+    if (this.currentVueComponent !== nextProps.component) {
+      this.updateVueComponent(this.props.component, nextProps.component)
     }
     /**
      * NOTE: we're not comparing this.props and nextProps here, because I didn't want to write a
@@ -62,40 +55,17 @@ export default class VueContainer extends React.Component {
    * pass VueContainer's binding explicitly.
    * @param {HTMLElement} targetElement - element to attact the Vue instance to
    * @param {ReactInstance} reactThisBinding - current instance of VueContainer
-   * @param {VueComponent} explicitlyPassedComponent (optional)
-   * @param {VueComponent} prevComponent (only used if explicitlyPassedComponent is provided)
    */
-  createVueInstance (parentElement, reactThisBinding, explicitlyPassedComponent, prevComponent) {
-    reactThisBinding.vueRef = parentElement
+  createVueInstance (targetElement, reactThisBinding) {
+    const { component, children, ...props } = reactThisBinding.props
 
-    if (explicitlyPassedComponent) {
-      /**
-       * Component is explicitly passed, which means we actually mean to update
-       * the previous Vue instance. Here, we update the mark so that we can
-       * detect `component` prop update later.
-       */
-      delete prevComponent.__vueraMark
-      explicitlyPassedComponent.__vueraMark = true
-    }
-
-    const component = explicitlyPassedComponent || reactThisBinding.props.component
-    const { children, ...props } = reactThisBinding.props
-    // If component has a name, use it; otherwise assign an arbitrary name
-    const componentName = component.name || 'vue-component'
-
-    /**
-     * Vue replaces the element it mounts into, so we have to create a child
-     * element so that we don't override the ref.
-     */
-    const targetElement = document.createElement('div')
-    parentElement.appendChild(targetElement)
     // `this` refers to Vue instance in the constructor
     reactThisBinding.vueInstance = new Vue({
       el: targetElement,
       data: { ...props },
       render (createElement) {
         return createElement(
-          componentName,
+          VUE_COMPONENT_NAME,
           {
             props: this.$data,
           },
@@ -103,10 +73,20 @@ export default class VueContainer extends React.Component {
         )
       },
       components: {
-        [componentName]: component,
+        [VUE_COMPONENT_NAME]: component,
         'vuera-internal-react-wrapper': ReactWrapper,
       },
     })
+  }
+
+  updateVueComponent (prevComponent, nextComponent) {
+    this.currentVueComponent = nextComponent
+
+    /**
+     * Replace the component in the Vue instance and update it.
+     */
+    this.vueInstance.$options.components[VUE_COMPONENT_NAME] = nextComponent
+    this.vueInstance.$forceUpdate()
   }
 
   render () {
