@@ -274,6 +274,8 @@ var slicedToArray = function () {
   };
 }();
 
+/* global document */
+
 var wrapReactChildren = function wrapReactChildren(createElement, children) {
   return createElement('vuera-internal-react-wrapper', {
     props: {
@@ -295,6 +297,12 @@ var VueContainer = function (_React$Component) {
     classCallCheck(this, VueContainer);
 
     /**
+     * We have to "mark" the component so that we can detect if the prop has
+     * been updated later. This mutates the actual component.
+     */
+    props.component.__vueraMark = true;
+
+    /**
      * Modify createVueInstance function to pass this binding correctly. Doing this in the
      * constructor to avoid instantiating functions in render.
      */
@@ -302,8 +310,8 @@ var VueContainer = function (_React$Component) {
 
     var createVueInstance = _this.createVueInstance;
     var self = _this;
-    _this.createVueInstance = function (element) {
-      createVueInstance(element, self);
+    _this.createVueInstance = function (element, component, prevComponent) {
+      createVueInstance(element, self, component, prevComponent);
     };
     return _this;
   }
@@ -311,6 +319,19 @@ var VueContainer = function (_React$Component) {
   createClass(VueContainer, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
+      var _this2 = this;
+
+      if (!nextProps.component.__vueraMark) {
+        /**
+         * If the `component` prop has changed, we have to clear the innerHTML
+         * of the vue ref before creating a new Vue instance.
+         */
+        this.vueRef.innerHTML = '';
+        var prevComponent = this.props.component;
+        Vue.nextTick(function () {
+          _this2.createVueInstance(_this2.vueRef, nextProps.component, prevComponent);
+        });
+      }
       /**
        * NOTE: we're not comparing this.props and nextProps here, because I didn't want to write a
        * function for deep object comparison. I don't know if this hurts performance a lot, maybe
@@ -331,23 +352,41 @@ var VueContainer = function (_React$Component) {
      * pass VueContainer's binding explicitly.
      * @param {HTMLElement} targetElement - element to attact the Vue instance to
      * @param {ReactInstance} reactThisBinding - current instance of VueContainer
+     * @param {VueComponent} explicitlyPassedComponent (optional)
+     * @param {VueComponent} prevComponent (only used if explicitlyPassedComponent is provided)
      */
 
   }, {
     key: 'createVueInstance',
-    value: function createVueInstance(targetElement, reactThisBinding) {
+    value: function createVueInstance(parentElement, reactThisBinding, explicitlyPassedComponent, prevComponent) {
       var _components;
 
-      // If the Vue instance has already been initialized, do nothing
-      if (reactThisBinding.vue) return;
+      reactThisBinding.vueRef = parentElement;
 
+      if (explicitlyPassedComponent) {
+        /**
+         * Component is explicitly passed, which means we actually mean to update
+         * the previous Vue instance. Here, we update the mark so that we can
+         * detect `component` prop update later.
+         */
+        delete prevComponent.__vueraMark;
+        explicitlyPassedComponent.__vueraMark = true;
+      }
+
+      var component = explicitlyPassedComponent || reactThisBinding.props.component;
       var _reactThisBinding$pro = reactThisBinding.props,
-          component = _reactThisBinding$pro.component,
           children = _reactThisBinding$pro.children,
-          props = objectWithoutProperties(_reactThisBinding$pro, ['component', 'children']);
+          props = objectWithoutProperties(_reactThisBinding$pro, ['children']);
       // If component has a name, use it; otherwise assign an arbitrary name
 
       var componentName = component.name || 'vue-component';
+
+      /**
+       * Vue replaces the element it mounts into, so we have to create a child
+       * element so that we don't override the ref.
+       */
+      var targetElement = document.createElement('div');
+      parentElement.appendChild(targetElement);
       // `this` refers to Vue instance in the constructor
       reactThisBinding.vueInstance = new Vue({
         el: targetElement,
@@ -415,10 +454,10 @@ var ReactWrapper = {
   },
 
   methods: {
-    mountReactComponent: function mountReactComponent() {
+    mountReactComponent: function mountReactComponent(component) {
       var _this2 = this;
 
-      var Component = makeReactContainer(this.$props.component);
+      var Component = makeReactContainer(component);
       var wrappedChildren = wrapVueChildren(this.$slots.default);
       ReactDOM.render(React.createElement(
         Component,
@@ -432,7 +471,7 @@ var ReactWrapper = {
     }
   },
   mounted: function mounted() {
-    this.mountReactComponent();
+    this.mountReactComponent(this.$props.component);
   },
   beforeDestroy: function beforeDestroy() {
     ReactDOM.unmountComponentAtNode(this.$refs.react);
@@ -446,6 +485,11 @@ var ReactWrapper = {
       },
 
       deep: true
+    },
+    '$props.component': {
+      handler: function handler(newValue) {
+        this.mountReactComponent(newValue);
+      }
     },
     $listeners: {
       handler: function handler() {

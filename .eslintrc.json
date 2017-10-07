@@ -6,7 +6,8 @@
     "jsx-quotes": ["error", "prefer-single"],
     "new-cap": "off",
     "no-param-reassign": "off",
-    "no-new": "off"
+    "no-new": "off",
+    "react/prop-types": "off"
   },
   "plugins": ["vue"],
   "globals": {

@@ -4,9 +4,7 @@ import VueWrapper from './Vue'
 
 const makeReactContainer = Component => {
   return class ReactInVue extends React.Component {
-    static displayName = `ReactInVue${Component.displayName ||
-      Component.name ||
-      'Component'}`
+    static displayName = `ReactInVue${Component.displayName || Component.name || 'Component'}`
 
     constructor (props) {
       super(props)
@@ -35,8 +33,8 @@ export default {
     return createElement('div', { ref: 'react' })
   },
   methods: {
-    mountReactComponent () {
-      const Component = makeReactContainer(this.$props.component)
+    mountReactComponent (component) {
+      const Component = makeReactContainer(component)
       const wrappedChildren = wrapVueChildren(this.$slots.default)
       ReactDOM.render(
         <Component
@@ -52,7 +50,7 @@ export default {
     },
   },
   mounted () {
-    this.mountReactComponent()
+    this.mountReactComponent(this.$props.component)
   },
   beforeDestroy () {
     ReactDOM.unmountComponentAtNode(this.$refs.react)
@@ -64,6 +62,11 @@ export default {
         this.reactComponentRef.setState({ ...this.$attrs })
       },
       deep: true,
+    },
+    '$props.component': {
+      handler (newValue) {
+        this.mountReactComponent(newValue)
+      },
     },
     $listeners: {
       handler () {
