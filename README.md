@@ -244,6 +244,50 @@ If you don't want to use the Vue plugin, you still have two ways of using this l
 </script>
 ```
 
+## FAQ (I think)
+
+### Are children supported?
+
+Yes. You can pass children from React to Vue and back as you usually would.
+
+React (children will go to the default slot of the Vue component):
+
+```jsx
+import React from 'react'
+import MyVueComponent from './MyVueComponent.vue'
+
+export default props =>
+  <div>
+    <MyVueComponent message={props.message}>
+      Hello there!
+    </MyVueComponent>
+  </div>
+```
+
+Vue:
+
+```vue
+<template>
+  <div>
+    <my-react-component :message="message">
+      G'day sir
+    </my-react-component>
+  </div>
+</template>
+
+<script>
+  import MyReactComponent from './MyReactComponent'
+
+  export default {
+    components: { 'my-react-component': MyReactComponent },
+  }
+</script>
+```
+
+### What's the performance? How fast/slow is it compared to pure React / Vue?
+
+I don't know, but the benchmark is coming. Stay tuned.
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
