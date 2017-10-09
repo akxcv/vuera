@@ -183,7 +183,7 @@ export default () => (
 ```jsx
 import React from 'react'
 import { VueInReact } from 'vuera'
-import MyVueComponent from './MyVueComponent.vue
+import MyVueComponent from './MyVueComponent.vue'
 
 export default () => {
   const Component = VueInReact(MyVueComponent)
