@@ -548,15 +548,20 @@ var VuePlugin = {
      * wraps all the React components while leaving Vue components as is.
      */
     var originalComponentsMergeStrategy = Vue$$1.config.optionMergeStrategies.components;
-    Vue$$1.config.optionMergeStrategies.components = function (parent, child, vm) {
-      var mergedValue = originalComponentsMergeStrategy(parent, child, vm);
-      return mergedValue ? Object.entries(mergedValue).reduce(function (acc, _ref) {
+    Vue$$1.config.optionMergeStrategies.components = function (parent) {
+      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+
+      var mergedValue = originalComponentsMergeStrategy.apply(undefined, [parent].concat(args));
+      var wrappedComponents = mergedValue ? Object.entries(mergedValue).reduce(function (acc, _ref) {
         var _ref2 = slicedToArray(_ref, 2),
             k = _ref2[0],
             v = _ref2[1];
 
         return _extends({}, acc, defineProperty({}, k, isReactComponent(v) ? VueResolver$$1(v) : v));
       }, {}) : mergedValue;
+      return Object.assign(parent, wrappedComponents);
     };
   }
 };
