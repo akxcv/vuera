@@ -2,6 +2,7 @@
 
 import resolve from 'rollup-plugin-node-resolve'
 import babel from 'rollup-plugin-babel'
+import { list as babelHelpersList } from 'babel-helpers'
 
 const shared = {
   input: 'src/index.js',
@@ -13,6 +14,9 @@ const shared = {
     }),
     babel({
       exclude: 'node-modules/**',
+      externalHelpersWhitelist: babelHelpersList.filter(
+        helperName => helperName !== 'asyncGenerator'
+      ),
     }),
   ],
   external: ['react', 'react-dom', 'vue'],
