@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.0] - 2017-11-10
+### Updated
+- Rollup 0.51
+- React 16.1
+- Vue 2.5
+
 ## [0.1.3] - 2017-11-02
 ### Fixed
 - Bug with globally registered Vue components (#18).
