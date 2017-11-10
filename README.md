@@ -288,6 +288,11 @@ Vue:
 
 I don't know, but the benchmark is coming. Stay tuned.
 
+## Articles
+
+[Integrating React and Vue Components in One Application](https://x-team.com/blog/react-vue-component-integration/) 
+by [@josephrexme](https://github.com/josephrexme)
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
