@@ -41,11 +41,11 @@
     "prettier": "^1.7.2",
     "react": "16",
     "react-dom": "16",
-    "rollup": "^0.50.0",
+    "rollup": "0.51",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "vue": "2.4.4",
-    "vue-template-compiler": "2.4.4",
+    "vue": "2.5",
+    "vue-template-compiler": "2.5",
     "vue-template-es2015-compiler": "^1.5.3"
   },
   "scripts": {
