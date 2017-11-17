@@ -108,7 +108,9 @@ Now, use your React components like you would normally use your Vue components!
 
   export default {
     data () {
-      message: 'Hello from React!',
+      return {
+        message: 'Hello from React!',
+      }
     },
     methods: {
       reset () {
@@ -137,7 +139,9 @@ special prop called `passedProps`:
 
   export default {
     data () {
-      message: 'Hello from React!',
+      return {
+        message: 'Hello from React!',
+      }
     },
     methods: {
       reset () {
@@ -214,8 +218,10 @@ If you don't want to use the Vue plugin, you still have two ways of using this l
 
   export default {
     data () {
-      component: MyReactComponent,
-      message: 'Hello from React!',
+      return {
+        component: MyReactComponent,
+        message: 'Hello from React!',
+      }
     },
     components: { react: ReactWrapper }
   }
@@ -237,7 +243,9 @@ If you don't want to use the Vue plugin, you still have two ways of using this l
 
   export default {
     data () {
-      message: 'Hello from React!',
+      return {
+        message: 'Hello from React!',
+      }
     },
     components: { 'my-react-component': ReactInVue(MyReactComponent) }
   }
@@ -290,7 +298,7 @@ I don't know, but the benchmark is coming. Stay tuned.
 
 ## Articles
 
-[Integrating React and Vue Components in One Application](https://x-team.com/blog/react-vue-component-integration/) 
+[Integrating React and Vue Components in One Application](https://x-team.com/blog/react-vue-component-integration/)
 by [@josephrexme](https://github.com/josephrexme)
 
 ## License
