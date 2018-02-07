@@ -3,6 +3,7 @@ import React from 'react'
 import { ReactWrapper } from '../../src'
 import PureFunctionalComponent from '../fixtures/ReactPureFunctionalComponent'
 import Component from '../fixtures/ReactComponent'
+import ChildlessComponent from '../fixtures/ReactChildlessComponent'
 import olderVueCompat from '../utils/olderVueCompat'
 
 const mockReset = jest.fn()
@@ -190,6 +191,42 @@ describe('ReactInVue', () => {
           </div></div></div></div>`
         )
       )
+    })
+
+    it('works with no children', () => {
+      const spy = jest.spyOn(console, 'error')
+
+      makeVueInstanceWithReactComponent(ChildlessComponent)
+      expect(document.body.innerHTML).toBe(
+        '<div><input><div><div><span>Message for React</span><button></button></div></div></div>'
+      )
+      expect(spy.mock.calls.length).toBe(0)
+
+      spy.mockReset()
+      spy.mockRestore()
+    })
+
+    it('raises underlying prop type errors with children in childless component', () => {
+      const spy = jest.spyOn(console, 'error')
+
+      makeVueInstanceWithReactComponent(ChildlessComponent, function (
+        createElement
+      ) {
+        return createElement('div', [
+          createElement(
+            'react',
+            olderVueCompat({ props: { component: this.component } }),
+            'child'
+          ),
+        ])
+      })
+      expect(document.body.innerHTML).toBe(
+        '<div><div><div><span></span><button></button></div></div></div>'
+      )
+      expect(spy.mock.calls.length).toBe(1)
+
+      spy.mockReset()
+      spy.mockRestore()
     })
   })
 })
