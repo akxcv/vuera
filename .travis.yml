@@ -22,6 +22,3 @@ script:
 branches:
   only:
     - master
-
-before_script:
-  - "export NODE_ENV=production"
