@@ -317,14 +317,15 @@ var makeReactContainer = function makeReactContainer(Component) {
       value: function render() {
         var _state = this.state,
             children = _state.children,
-            rest = objectWithoutProperties(_state, ['children']);
+            _invoker = _state[''],
+            rest = objectWithoutProperties(_state, ['children', '']);
 
         var wrappedChildren = this.wrapVueChildren(children);
 
         return React.createElement(
           Component,
           rest,
-          React.createElement(VueContainer, { component: wrappedChildren })
+          children && React.createElement(VueContainer, { component: wrappedChildren })
         );
       }
     }]);
@@ -343,8 +344,8 @@ var ReactWrapper = {
       var _this2 = this;
 
       var Component = makeReactContainer(component);
-      ReactDOM.render(React.createElement(Component, _extends({}, this.$props.passedProps, this.$attrs, this.$listeners, {
-        children: this.$slots.default,
+      var children = this.$slots.default !== undefined ? { children: this.$slots.default } : {};
+      ReactDOM.render(React.createElement(Component, _extends({}, this.$props.passedProps, this.$attrs, this.$listeners, children, {
         ref: function ref(_ref) {
           return _this2.reactComponentRef = _ref;
         }
@@ -362,7 +363,11 @@ var ReactWrapper = {
      * AFAIK, this is the only way to update children. It doesn't seem to be possible to watch
      * `$slots` or `$children`.
      */
-    this.reactComponentRef.setState({ children: this.$slots.default });
+    if (this.$slots.default !== undefined) {
+      this.reactComponentRef.setState({ children: this.$slots.default });
+    } else {
+      this.reactComponentRef.setState({ children: null });
+    }
   },
 
   inheritAttrs: false,

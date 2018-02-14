@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## [0.2.1] - 2018-02-14
 ### Fixed
-- Only pass wrapped children if children exist to pass prop type validation. (#27)
+- Only pass wrapped children if children exist to pass prop type validation. (#27) - [@phillbaker][]
 
 ## [0.2.0] - 2017-11-10
 ### Updated
@@ -30,3 +30,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.1.0] - 2017-10-03
 Initial release.
+
+[@phillbaker]: https://github.com/phillbaker
