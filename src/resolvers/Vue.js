@@ -1,6 +1,6 @@
 import { ReactWrapper } from '../'
 
-export default function VueResolver (component) {
+export default function VueResolver (component, reactRegistry) {
   return {
     components: { ReactWrapper },
     props: ['passedProps'],
@@ -11,6 +11,7 @@ export default function VueResolver (component) {
         {
           props: {
             component,
+            reactRegistry,
             passedProps: this.$props.passedProps,
           },
           attrs: this.$attrs,
