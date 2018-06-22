@@ -407,7 +407,7 @@ var ReactWrapper = {
 function isReactComponent(component) {
   if ((typeof component === 'undefined' ? 'undefined' : _typeof(component)) === 'object') {
     return false;
-  } else if (typeof component === 'function' && component.prototype.constructor.super && component.prototype.constructor.super.name.startsWith('Vue')) {
+  } else if (typeof component === 'function' && component.prototype && component.prototype.constructor.super && component.prototype.constructor.super.name.startsWith('Vue')) {
     return false;
   } else {
     return true;

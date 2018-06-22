@@ -3,6 +3,7 @@ export default function isReactComponent (component) {
     return false
   } else if (
     typeof component === 'function' &&
+    component.prototype &&
     component.prototype.constructor.super &&
     component.prototype.constructor.super.name.startsWith('Vue')
   ) {

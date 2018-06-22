@@ -1,6 +1,7 @@
 import isReactComponent from '../../src/utils/isReactComponent'
 import ReactComponent from '../fixtures/ReactComponent'
 import ReactPureFunctionalComponent from '../fixtures/ReactPureFunctionalComponent'
+import ReactFunctionalComponent from '../fixtures/ReactFunctionalComponent'
 import VueComponent from '../fixtures/VueComponent'
 import VueRegisteredComponent from '../fixtures/VueRegisteredComponent'
 import VueSingleFileComponent from '../fixtures/VueSingleFileComponent.vue'
@@ -9,6 +10,7 @@ describe('isReactComponent', () => {
   it('returns true for React components', () => {
     expect(isReactComponent(ReactComponent)).toBe(true)
     expect(isReactComponent(ReactPureFunctionalComponent)).toBe(true)
+    expect(isReactComponent(ReactFunctionalComponent)).toBe(true)
   })
 
   it('returns false for Vue components', () => {
