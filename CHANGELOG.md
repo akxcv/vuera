@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.2] - 2018-06-22
+### Fixed
+- React component check for native (ES6) arrow functions (#44).
+
 ## [0.2.1] - 2018-02-14
 ### Fixed
 - Only pass wrapped children if children exist to pass prop type validation. (#27) - [@phillbaker][]
