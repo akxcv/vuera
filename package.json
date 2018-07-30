@@ -8,8 +8,18 @@
   "main": "dist/vuera.cjs.js",
   "modules": "dist/vuera.es.js",
   "unpkg": "dist/vuera.iife.js",
-  "files": ["dist", "babel.js"],
-  "keywords": ["vue", "react", "interop", "adapter", "migrate", "seamless-integration"],
+  "files": [
+    "dist",
+    "babel.js"
+  ],
+  "keywords": [
+    "vue",
+    "react",
+    "interop",
+    "adapter",
+    "migrate",
+    "seamless-integration"
+  ],
   "peerDependencies": {
     "react": ">= 15.2.0",
     "react-dom": ">= 15.2.0",
@@ -25,7 +35,7 @@
     "babel-preset-latest": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "coveralls": "^3.0.0",
-    "eslint": "3.19.0",
+    "eslint": "^5.2.0",
     "eslint-config-umbrellio": "^0.4.5",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
@@ -57,10 +67,29 @@
     "precommit": "lint-staged && yarn run build && git add dist"
   },
   "lint-staged": {
-    "*.json": ["prettier --write", "git add"],
-    "src/**/*.js": ["prettier --write", "eslint --fix", "git add"],
-    "tests/**/*.js": ["prettier --write", "eslint --fix", "git add"],
-    "/*.js": ["prettier --write", "eslint --fix", "git add"],
-    "babel.js": ["prettier --write", "eslint --fix", "git add"]
+    "*.json": [
+      "prettier --write",
+      "git add"
+    ],
+    "src/**/*.js": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ],
+    "tests/**/*.js": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ],
+    "/*.js": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ],
+    "babel.js": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ]
   }
 }
