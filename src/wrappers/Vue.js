@@ -50,6 +50,10 @@ export default class VueContainer extends React.Component {
     this.vueInstance.$destroy()
   }
 
+  componentName() {
+    return `vuera-internal-component-name-${this.vueraComponentName}`
+  }
+
   /**
    * Creates and mounts the Vue instance.
    * NOTE: since we need to access the current instance of VueContainer, as well as the Vue instance
@@ -67,16 +71,16 @@ export default class VueContainer extends React.Component {
       data: props,
       render (createElement) {
         return createElement(
-          VUE_COMPONENT_NAME,
+          reactThisBinding.componentName(),
           {
-            props: this.$data,
+            props: this.$data
           },
           [wrapReactChildren(createElement, this.children)]
         )
       },
       components: {
-        [VUE_COMPONENT_NAME]: component,
-        'vuera-internal-react-wrapper': ReactWrapper,
+        [reactThisBinding.componentName()]: component,
+        'vuera-internal-react-wrapper': ReactWrapper
       },
     })
   }
@@ -87,7 +91,7 @@ export default class VueContainer extends React.Component {
     /**
      * Replace the component in the Vue instance and update it.
      */
-    this.vueInstance.$options.components[VUE_COMPONENT_NAME] = nextComponent
+    this.vueInstance.$options.components[this.componentName()] = nextComponent
     this.vueInstance.$forceUpdate()
   }
 

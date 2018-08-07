@@ -1,6 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import Vue from 'vue'
 import VueWrapper from './Vue'
+
+const makeVueContainer = () => {
+  return class ReactInReact extends VueWrapper {};
+}
 
 const makeReactContainer = Component => {
   return class ReactInVue extends React.Component {
@@ -23,32 +28,80 @@ const makeReactContainer = Component => {
       }
     }
 
-    render () {
+    wrapReactChildren(children, reactChildren) {
+      return children.map((child, index) => {
+        const wrappedChildren = this.wrapVueChildren(child.componentOptions.children)
+        const childrenComponent = child.componentOptions.children
+          ? React.createElement(makeVueContainer(), { component: wrappedChildren })
+          : null
+        return React.createElement(
+          reactChildren[index],
+          {
+            key: `${this.constructor.displayName}Child${index}`,
+            ...child.componentOptions.propsData
+          },
+          childrenComponent
+        )
+      })
+    }
+
+    render() {
       const {
         children,
         // Vue attaches an event handler, but it is missing an event name, so
         // it ends up using an empty string. Prevent passing an empty string
         // named prop to React.
         '': _invoker,
+        __vueraReactChildren,
         ...rest
       } = this.state
       const wrappedChildren = this.wrapVueChildren(children)
 
       return (
         <Component {...rest}>
-          {children && <VueWrapper component={wrappedChildren} />}
+          {(children && __vueraReactChildren.length === children.length)
+            ? this.wrapReactChildren(children, __vueraReactChildren)
+            : (children && <VueWrapper component={wrappedChildren} />)}
         </Component>
       )
     }
   }
 }
 
+const camelizeRE = /-(\w)/g
+const camelize = function(str) {
+  return str.replace(camelizeRE, function(_, c) {
+    return c ? c.toUpperCase() : ''
+  })
+}
+const capitalize = function(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
 export default {
-  props: ['component', 'passedProps'],
+  props: ['component', 'passedProps', 'reactRegistry'],
   render (createElement) {
     return createElement('div', { ref: 'react' })
   },
   methods: {
+    computeReactChildren () {
+      const reactChildren = []
+      if (this.$slots.default && this.$slots.default.length) {
+        this.$slots.default.forEach(child => {
+          if (child.componentOptions && child.componentOptions.tag) {
+            const id = child.componentOptions.tag
+            const camelizedId = camelize(id)
+            const pascalCaseId = capitalize(camelizedId)
+            reactChildren.push(
+              this.reactRegistry[id] ||
+                this.reactRegistry[camelizedId] ||
+                this.reactRegistry[pascalCaseId]
+            )
+          }
+        })
+      }
+      return reactChildren
+    },
     mountReactComponent (component) {
       const Component = makeReactContainer(component)
       const children = this.$slots.default !== undefined ? { children: this.$slots.default } : {}
@@ -59,6 +112,7 @@ export default {
           {...this.$listeners}
           {...children}
           ref={ref => (this.reactComponentRef = ref)}
+          __vueraReactChildren={this.computeReactChildren()}
         />,
         this.$refs.react
       )
@@ -76,7 +130,10 @@ export default {
      * `$slots` or `$children`.
      */
     if (this.$slots.default !== undefined) {
-      this.reactComponentRef.setState({ children: this.$slots.default })
+      this.reactComponentRef.setState({
+        children: this.$slots.default,
+        __vueraReactChildren: this.computeReactChildren()
+      })
     } else {
       this.reactComponentRef.setState({ children: null })
     }
