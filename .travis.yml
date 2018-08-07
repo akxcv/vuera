@@ -16,6 +16,7 @@ install:
   - yarn install
   - yarn add -D react@$REACT_VERSION react-dom@$REACT_VERSION vue@$VUE_VERSION vue-template-compiler@$VUE_VERSION
 script:
+  - yarn lint
   - yarn run test:coverage -- --coverageReporters=lcov
   - cat ./coverage/lcov.info | yarn run coveralls
 
