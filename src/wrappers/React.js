@@ -10,11 +10,13 @@ const makeReactContainer = Component => {
       super(props)
 
       /**
-       * We create a stateful component in order to attach a ref on it. We will use that ref to
-       * update component's state, which seems better than re-rendering the whole thing with
+       * We previously created a stateful component in order to attach a ref on it. We have used that ref to
+       * update component's state, which seemed better than re-rendering the whole thing with
        * ReactDOM.
+       * Since React 16.5.0 the above would have logged errors, so we continue to shallow copy props. See
+       * https://github.com/facebook/react/pull/11658
        */
-      this.state = props
+      this.state = { ...props }
     }
 
     wrapVueChildren (children) {
