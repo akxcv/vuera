@@ -59,7 +59,7 @@ export default class VueContainer extends React.Component {
    * @param {ReactInstance} reactThisBinding - current instance of VueContainer
    */
   createVueInstance (targetElement, reactThisBinding) {
-    const { component, ...props } = reactThisBinding.props
+    const { component, on, ...props } = reactThisBinding.props
 
     // `this` refers to Vue instance in the constructor
     reactThisBinding.vueInstance = new Vue({
@@ -70,6 +70,7 @@ export default class VueContainer extends React.Component {
           VUE_COMPONENT_NAME,
           {
             props: this.$data,
+            on
           },
           [wrapReactChildren(createElement, this.children)]
         )
