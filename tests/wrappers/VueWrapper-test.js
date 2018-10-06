@@ -5,7 +5,7 @@ import VueComponent from '../fixtures/VueComponent'
 import VueRegisteredComponent from '../fixtures/VueRegisteredComponent'
 import VueSingleFileComponent from '../fixtures/VueSingleFileComponent.vue'
 
-const mockReset = jest.fn()
+const mockReset = () => { return jest.fn() }
 const makeReactInstanceWithVueComponent = (passedComponent, events) => {
   class ReactApp extends React.Component {
     constructor (props) {
@@ -13,6 +13,7 @@ const makeReactInstanceWithVueComponent = (passedComponent, events) => {
       this.state = {
         message: props.message,
       }
+      this.mockReset = mockReset()
     }
 
     onChange = e => {
@@ -32,7 +33,7 @@ const makeReactInstanceWithVueComponent = (passedComponent, events) => {
             component={passedComponent}
             on={events}
             message={this.state.message}
-            reset={mockReset}
+            reset={this.mockReset}
           />
         </div>
       )
@@ -125,10 +126,10 @@ describe('VueInReact', () => {
   })
 
   test('functions work', () => {
-    makeReactInstanceWithVueComponent(VueComponent)
-    expect(mockReset.mock.calls.length).toBe(0)
+    const reactAppInstance = makeReactInstanceWithVueComponent(VueComponent)
+    expect(reactAppInstance.mockReset.mock.calls.length).toBe(0)
     document.querySelector('button').click()
-    expect(mockReset.mock.calls.length).toBe(1)
+    expect(reactAppInstance.mockReset.mock.calls.length).toBe(1)
   })
 
   test('when React component is unmounted, Vue instance gets destroyed', () => {
