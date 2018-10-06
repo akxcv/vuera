@@ -112,7 +112,7 @@ describe('VueInReact', () => {
     let eventRaised = false
     const hndlr = () => (eventRaised = true)
     const events = { 'custom-event': hndlr }
-    const reactAppInstance = makeReactInstanceWithVueComponent(VueSingleFileComponent, events)
+    makeReactInstanceWithVueComponent(VueSingleFileComponent, events)
     expect(eventRaised).toBe(false)
     document.querySelector('button').click()
     expect(eventRaised).toBe(true)
