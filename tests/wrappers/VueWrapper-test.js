@@ -6,7 +6,7 @@ import VueRegisteredComponent from '../fixtures/VueRegisteredComponent'
 import VueSingleFileComponent from '../fixtures/VueSingleFileComponent.vue'
 
 const mockReset = jest.fn()
-const makeReactInstanceWithVueComponent = passedComponent => {
+const makeReactInstanceWithVueComponent = (passedComponent, events) => {
   class ReactApp extends React.Component {
     constructor (props) {
       super(props)
@@ -30,6 +30,7 @@ const makeReactInstanceWithVueComponent = passedComponent => {
           <VueWrapper
             ref={ref => (this.vueWrapperRef = ref)}
             component={passedComponent}
+            on={events}
             message={this.state.message}
             reset={mockReset}
           />
@@ -105,6 +106,16 @@ describe('VueInReact', () => {
         </div>`
       )
     )
+  })
+
+  it('wires up events correctly', () => {
+    let eventRaised = false
+    const hndlr = () => (eventRaised = true)
+    const events = { 'custom-event': hndlr }
+    const reactAppInstance = makeReactInstanceWithVueComponent(VueSingleFileComponent, events)
+    expect(eventRaised).toBe(false)
+    document.querySelector('button').click()
+    expect(eventRaised).toBe(true)
   })
 
   it('synchronises props', () => {

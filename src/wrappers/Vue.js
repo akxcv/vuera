@@ -70,7 +70,7 @@ export default class VueContainer extends React.Component {
           VUE_COMPONENT_NAME,
           {
             props: this.$data,
-            on
+            on,
           },
           [wrapReactChildren(createElement, this.children)]
         )
