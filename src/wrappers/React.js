@@ -14,7 +14,7 @@ const makeReactContainer = Component => {
        * update component's state, which seems better than re-rendering the whole thing with
        * ReactDOM.
        */
-      this.state = props
+      this.state = { ...props }
     }
 
     wrapVueChildren (children) {
