@@ -244,7 +244,8 @@ var VueContainer = function (_React$Component) {
 
       var _reactThisBinding$pro = reactThisBinding.props,
           component = _reactThisBinding$pro.component,
-          props = objectWithoutProperties(_reactThisBinding$pro, ['component']);
+          on = _reactThisBinding$pro.on,
+          props = objectWithoutProperties(_reactThisBinding$pro, ['component', 'on']);
 
       // `this` refers to Vue instance in the constructor
 
@@ -253,7 +254,8 @@ var VueContainer = function (_React$Component) {
         data: props,
         render: function render(createElement) {
           return createElement(VUE_COMPONENT_NAME, {
-            props: this.$data
+            props: this.$data,
+            on: on
           }, [wrapReactChildren(createElement, this.children)]);
         },
 
@@ -296,7 +298,7 @@ var makeReactContainer = function makeReactContainer(Component) {
        */
       var _this = possibleConstructorReturn(this, (ReactInVue.__proto__ || Object.getPrototypeOf(ReactInVue)).call(this, props));
 
-      _this.state = props;
+      _this.state = _extends({}, props);
       return _this;
     }
 
