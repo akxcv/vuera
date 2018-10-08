@@ -7,11 +7,11 @@ env:
     - REACT_VERSION=15.2.0
     - REACT_VERSION=15.6.1
     - REACT_VERSION=16.0.0
-    - REACT_VERSION=16.1.0
+    - REACT_VERSION=16.5.2
     - VUE_VERSION=2.2.0
     - VUE_VERSION=2.3.4
     - VUE_VERSION=2.4.4
-    - VUE_VERSION=2.5
+    - VUE_VERSION=2.5.17
 install:
   - yarn install
   - yarn add -D react@$REACT_VERSION react-dom@$REACT_VERSION vue@$VUE_VERSION vue-template-compiler@$VUE_VERSION
