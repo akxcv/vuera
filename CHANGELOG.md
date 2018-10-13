@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.3] - 2018-10-13
+### Fixed
+- React 16.5 prop warnings (#62) - [@walts81][]
+### Added
+- Support for custom Vue events (#62) - [@walts81][]
+
 ## [0.2.2] - 2018-06-22
 ### Fixed
 - React component check for native (ES6) arrow functions (#44).
@@ -36,3 +42,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Initial release.
 
 [@phillbaker]: https://github.com/phillbaker
+[@walts81]: https://github.com/walts81
