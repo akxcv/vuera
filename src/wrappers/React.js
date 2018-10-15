@@ -35,9 +35,7 @@ const makeReactContainer = Component => {
       const wrappedChildren = this.wrapVueChildren(children)
 
       return (
-        <Component {...rest}>
-          {children && <VueWrapper component={wrappedChildren} />}
-        </Component>
+        <Component {...rest}>{children && <VueWrapper component={wrappedChildren} />}</Component>
       )
     }
   }
@@ -46,7 +44,8 @@ const makeReactContainer = Component => {
 export default {
   props: ['component', 'passedProps'],
   render (createElement) {
-    return createElement('div', { ref: 'react' })
+    this.refString = `react-${Math.random().toString()}`
+    return createElement('div', { ref: this.refString })
   },
   methods: {
     mountReactComponent (component) {
@@ -60,7 +59,7 @@ export default {
           {...children}
           ref={ref => (this.reactComponentRef = ref)}
         />,
-        this.$refs.react
+        this.$refs[this.refString]
       )
     },
   },
@@ -68,7 +67,7 @@ export default {
     this.mountReactComponent(this.$props.component)
   },
   beforeDestroy () {
-    ReactDOM.unmountComponentAtNode(this.$refs.react)
+    ReactDOM.unmountComponentAtNode(this.$refs[this.refString])
   },
   updated () {
     /**

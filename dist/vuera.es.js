@@ -335,7 +335,8 @@ var makeReactContainer = function makeReactContainer(Component) {
 var ReactWrapper = {
   props: ['component', 'passedProps'],
   render: function render(createElement) {
-    return createElement('div', { ref: 'react' });
+    this.refString = 'react-' + Math.random().toString();
+    return createElement('div', { ref: this.refString });
   },
 
   methods: {
@@ -348,14 +349,14 @@ var ReactWrapper = {
         ref: function ref(_ref) {
           return _this2.reactComponentRef = _ref;
         }
-      })), this.$refs.react);
+      })), this.$refs[this.refString]);
     }
   },
   mounted: function mounted() {
     this.mountReactComponent(this.$props.component);
   },
   beforeDestroy: function beforeDestroy() {
-    ReactDOM.unmountComponentAtNode(this.$refs.react);
+    ReactDOM.unmountComponentAtNode(this.$refs[this.refString]);
   },
   updated: function updated() {
     /**
