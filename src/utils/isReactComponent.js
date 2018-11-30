@@ -1,14 +1,16 @@
 export default function isReactComponent (component) {
-  if (typeof component === 'object') {
+  if (typeof component === 'object' && !isReactForwardReference(component)) {
     return false
-  } else if (
+  }
+
+  return !(
     typeof component === 'function' &&
     component.prototype &&
     component.prototype.constructor.super &&
     component.prototype.constructor.super.name.startsWith('Vue')
-  ) {
-    return false
-  } else {
-    return true
-  }
+  )
+}
+
+function isReactForwardReference (component) {
+  return component.$$typeof && component.$$typeof.toString() === 'Symbol(react.forward_ref)'
 }

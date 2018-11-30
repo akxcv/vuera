@@ -407,13 +407,15 @@ var ReactWrapper = {
 };
 
 function isReactComponent(component) {
-  if ((typeof component === 'undefined' ? 'undefined' : _typeof(component)) === 'object') {
+  if ((typeof component === 'undefined' ? 'undefined' : _typeof(component)) === 'object' && !isReactForwardReference(component)) {
     return false;
-  } else if (typeof component === 'function' && component.prototype && component.prototype.constructor.super && component.prototype.constructor.super.name.startsWith('Vue')) {
-    return false;
-  } else {
-    return true;
   }
+
+  return !(typeof component === 'function' && component.prototype && component.prototype.constructor.super && component.prototype.constructor.super.name.startsWith('Vue'));
+}
+
+function isReactForwardReference(component) {
+  return component.$$typeof && component.$$typeof.toString() === 'Symbol(react.forward_ref)';
 }
 
 function VueResolver$$1(component) {
