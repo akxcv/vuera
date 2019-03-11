@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AlternateFlow renders 1`] = `
+<div>
+  <div
+    className=""
+  >
+    <header
+      className={undefined}
+      style={
+        Object {
+          "position": "fixed",
+        }
+      }
+    >
+      <div
+        className="b-container"
+      >
+        <button
+          className={undefined}
+          onClick={[Function]}
+          type="button"
+        />
+        <h3
+          className={undefined}
+        >
+          Face verification
+        </h3>
+      </div>
+    </header>
+    <div
+      className={undefined}
+    >
+      <div
+        className={undefined}
+      >
+        <div
+          className="b-title"
+        >
+          We are now going to perform a face verification.
+        </div>
+        <div
+          className={undefined}
+        >
+          <div>
+            Please don't have anything covering your face.
+          </div>
+          <img
+            alt=""
+            src="images/tips/facescan/no-hat-classes.png"
+          />
+          <span>
+            Sunglasses and hats for example.
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className={undefined}
+    >
+      <div
+        className={undefined}
+        style={
+          Object {
+            "padding": "20px 0",
+          }
+        }
+      >
+        <div
+          className={undefined}
+        >
+          <button
+            className=""
+            disabled={false}
+            onClick={[Function]}
+            type="button"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <input
+    accept="image/*"
+    capture="user"
+    name="image"
+    style={
+      Object {
+        "opacity": 0,
+        "zIindex": 99,
+      }
+    }
+    type="file"
+  />
+</div>
+`;
