@@ -6,3 +6,4 @@ global.normalizeHTMLString = function normalizeHTMLString (string) {
 }
 
 Vue.config.productionTip = false
+Vue.prototype.constructor.isVue = true

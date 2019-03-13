@@ -408,7 +408,7 @@ function isReactComponent(component) {
     return false;
   }
 
-  return !(typeof component === 'function' && component.prototype && component.prototype.constructor.super && component.prototype.constructor.super.name.startsWith('Vue'));
+  return !(typeof component === 'function' && component.prototype && component.prototype.constructor.super && component.prototype.constructor.super.isVue);
 }
 
 function isReactForwardReference(component) {
@@ -458,6 +458,7 @@ var VuePlugin = {
       }, {}) : mergedValue;
       return Object.assign(parent, wrappedComponents);
     };
+    Vue$$1.prototype.constructor.isVue = true;
   }
 };
 
