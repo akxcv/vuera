@@ -7,7 +7,7 @@ export default function isReactComponent (component) {
     typeof component === 'function' &&
     component.prototype &&
     component.prototype.constructor.super &&
-    component.prototype.constructor.super.name.startsWith('Vue')
+    component.prototype.constructor.super.isVue
   )
 }
 
