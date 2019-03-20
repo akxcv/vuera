@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.4] - 2019-03-20
+### Fixed
+- Usage with styled-components (#69) - [@fsodano][]
+- Improved Vue component detection (#71) - [@runebaas][]
+- Builds and tests can now be run on Windows (#73) - [@runebaas][]
+
 ## [0.2.3] - 2018-10-13
 ### Fixed
 - React 16.5 prop warnings (#62) - [@walts81][]
@@ -43,3 +49,5 @@ Initial release.
 
 [@phillbaker]: https://github.com/phillbaker
 [@walts81]: https://github.com/walts81
+[@fsodano]: https://github.com/fsodano
+[@runebaas]: https://github.com/runebaas
