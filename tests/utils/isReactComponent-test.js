@@ -20,4 +20,10 @@ describe('isReactComponent', () => {
     expect(isReactComponent(VueRegisteredComponent)).toBe(false)
     expect(isReactComponent(VueSingleFileComponent)).toBe(false)
   })
+
+  it('returns false for blank input', () => {
+    expect(isReactComponent(false)).toBe(false)
+    expect(isReactComponent(null)).toBe(false)
+    expect(isReactComponent(undefined)).toBe(false)
+  })
 })

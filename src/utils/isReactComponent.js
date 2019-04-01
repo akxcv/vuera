@@ -1,4 +1,5 @@
 export default function isReactComponent (component) {
+  if (!component) return false
   if (typeof component === 'object' && !isReactForwardReference(component)) {
     return false
   }
