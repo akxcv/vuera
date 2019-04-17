@@ -456,7 +456,7 @@ var VuePlugin = {
 
         return _extends({}, acc, defineProperty({}, k, isReactComponent(v) ? VueResolver$$1(v) : v));
       }, {}) : mergedValue;
-      return Object.assign(parent, wrappedComponents);
+      return Object.assign(mergedValue, wrappedComponents);
     };
     Vue$$1.prototype.constructor.isVue = true;
   }
