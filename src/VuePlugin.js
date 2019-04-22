@@ -22,7 +22,7 @@ export default {
             {}
           )
         : mergedValue
-      return Object.assign(parent, wrappedComponents)
+      return Object.assign(mergedValue, wrappedComponents)
     }
     Vue.prototype.constructor.isVue = true
   },
