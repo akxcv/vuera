@@ -11,6 +11,11 @@ const wrapReactChildren = (createElement, children) =>
     },
   })
 
+let vueInstanceOptions = {}
+export const setVueInstanceOptions = opts => {
+  vueInstanceOptions = opts
+}
+
 export default class VueContainer extends React.Component {
   constructor (props) {
     super(props)
@@ -65,6 +70,7 @@ export default class VueContainer extends React.Component {
     reactThisBinding.vueInstance = new Vue({
       el: targetElement,
       data: props,
+      ...vueInstanceOptions,
       render (createElement) {
         return createElement(
           VUE_COMPONENT_NAME,
