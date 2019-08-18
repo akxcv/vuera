@@ -1,6 +1,7 @@
 import React from 'react'
 import Vue from 'vue'
 import ReactWrapper from './React'
+import { config } from '../../src'
 
 const VUE_COMPONENT_NAME = 'vuera-internal-component-name'
 
@@ -10,11 +11,6 @@ const wrapReactChildren = (createElement, children) =>
       component: () => <div>{children}</div>,
     },
   })
-
-let vueInstanceOptions = {}
-export const setVueInstanceOptions = opts => {
-  vueInstanceOptions = opts
-}
 
 export default class VueContainer extends React.Component {
   constructor (props) {
@@ -70,7 +66,7 @@ export default class VueContainer extends React.Component {
     reactThisBinding.vueInstance = new Vue({
       el: targetElement,
       data: props,
-      ...vueInstanceOptions,
+      ...config.vueInstanceOptions,
       render (createElement) {
         return createElement(
           VUE_COMPONENT_NAME,
