@@ -1,9 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Vue from 'vue'
-import { VueWrapper, config } from '../../src'
+import { VueWrapper } from '../../src'
 import VueComponent from '../fixtures/VueComponent'
-import VueInstanceOptionsComponent, { Plugin } from '../fixtures/VueInstanceOptionsComponent'
 import VueRegisteredComponent from '../fixtures/VueRegisteredComponent'
 import VueSingleFileComponent from '../fixtures/VueSingleFileComponent.vue'
 
@@ -205,21 +203,6 @@ describe('VueInReact', () => {
           </div>`
         )
       )
-    })
-  })
-
-  describe('config', () => {
-    afterEach(() => {
-      config.vueInstanceOptions = {}
-    })
-
-    it('adds vue instance options', () => {
-      Vue.use(Plugin)
-
-      config.vueInstanceOptions = { foo: 'New message!', bar: 'Other message' }
-      makeReactInstanceWithVueComponent(VueInstanceOptionsComponent)
-      expect(document.body.innerHTML).toContain('New message!')
-      expect(document.body.innerHTML).toContain('Other message')
     })
   })
 })

@@ -1,7 +1,6 @@
 import React from 'react'
 import Vue from 'vue'
 import ReactWrapper from './React'
-import { config } from '../../src'
 
 const VUE_COMPONENT_NAME = 'vuera-internal-component-name'
 
@@ -66,7 +65,6 @@ export default class VueContainer extends React.Component {
     reactThisBinding.vueInstance = new Vue({
       el: targetElement,
       data: props,
-      ...config.vueInstanceOptions,
       render (createElement) {
         return createElement(
           VUE_COMPONENT_NAME,
