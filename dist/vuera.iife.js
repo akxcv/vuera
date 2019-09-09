@@ -182,11 +182,6 @@ var wrapReactChildren = function wrapReactChildren(createElement, children) {
   });
 };
 
-var vueInstanceOptions = {};
-var setVueInstanceOptions = function setVueInstanceOptions(opts) {
-  vueInstanceOptions = opts;
-};
-
 var VueContainer = function (_React$Component) {
   inherits(VueContainer, _React$Component);
 
@@ -260,7 +255,7 @@ var VueContainer = function (_React$Component) {
       reactThisBinding.vueInstance = new Vue(_extends({
         el: targetElement,
         data: props
-      }, vueInstanceOptions, {
+      }, config.vueInstanceOptions, {
         render: function render(createElement) {
           return createElement(VUE_COMPONENT_NAME, {
             props: this.$data,
@@ -483,13 +478,21 @@ function babelReactResolver$$1(component, props, children) {
   return isReactComponent(component) ? React.createElement(component, props, children) : React.createElement(VueContainer, Object.assign({ component: component }, props), children);
 }
 
-exports.setVueInstanceOptions = setVueInstanceOptions;
+function defaultConfig() {
+  return {
+    vueInstanceOptions: {}
+  };
+}
+
+var config = defaultConfig();
+
 exports.ReactWrapper = ReactWrapper;
 exports.VueWrapper = VueContainer;
 exports.__vueraReactResolver = babelReactResolver$$1;
 exports.VuePlugin = VuePlugin;
 exports.VueInReact = ReactResolver$$1;
 exports.ReactInVue = VueResolver$$1;
+exports.config = config;
 
 return exports;
 
