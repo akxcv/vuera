@@ -405,7 +405,7 @@ function isReactComponent(component) {
     return false;
   }
 
-  return !(typeof component === 'function' && component.prototype && component.prototype.constructor.super && component.prototype.constructor.super.isVue);
+  return !(typeof component === 'function' && component.prototype && (component.prototype.constructor.super && component.prototype.constructor.super.isVue || component.prototype instanceof Vue));
 }
 
 function isReactForwardReference(component) {
