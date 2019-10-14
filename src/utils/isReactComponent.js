@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 export default function isReactComponent (component) {
   if (typeof component === 'object' && !isReactForwardReference(component)) {
     return false
@@ -6,8 +8,8 @@ export default function isReactComponent (component) {
   return !(
     typeof component === 'function' &&
     component.prototype &&
-    component.prototype.constructor.super &&
-    component.prototype.constructor.super.isVue
+    ((component.prototype.constructor.super && component.prototype.constructor.super.isVue) ||
+      component.prototype instanceof Vue)
   )
 }
 
