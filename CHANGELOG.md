@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2.6] - 2019-10-15
+### Fixed
+- Vue components that use Vue.extend (#95) - [@wenlz123][]
+
 ## [0.2.5] - 2019-04-22
 ### Fixed
 - Incorrect handling of multiple components with same name (#79) - [@khashish][]
@@ -55,3 +59,4 @@ Initial release.
 [@fsodano]: https://github.com/fsodano
 [@runebaas]: https://github.com/runebaas
 [@khashish]: https://github.com/khashish
+[@wenlz123]: https://github.com/wenlz123
