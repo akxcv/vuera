@@ -259,7 +259,9 @@ var VueContainer = function (_React$Component) {
         el: targetElement,
         data: props,
         updated: function updated() {
-          Vue.nextTick(props.fn);
+          if (props.fn) {
+            Vue.nextTick(props.fn);
+          }
         },
         render: function render(createElement) {
           return createElement(VUE_COMPONENT_NAME, {

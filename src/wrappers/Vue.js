@@ -66,7 +66,9 @@ export default class VueContainer extends React.Component {
       el: targetElement,
       data: props,
       updated () {
-        Vue.nextTick(props.fn)
+        if (props.fn) {
+          Vue.nextTick(props.fn)
+        }
       },
       render (createElement) {
         return createElement(
