@@ -4,14 +4,18 @@ import { VueWrapper } from '../../src'
 import VueComponent from '../fixtures/VueComponent'
 import VueRegisteredComponent from '../fixtures/VueRegisteredComponent'
 import VueSingleFileComponent from '../fixtures/VueSingleFileComponent.vue'
+import VueSingleFileComponentChanged from '../fixtures/VueSingleFileComponentChanged.vue'
 
-const mockReset = () => { return jest.fn() }
-const makeReactInstanceWithVueComponent = (passedComponent, events) => {
+const mockReset = () => {
+  return jest.fn()
+}
+const makeReactInstanceWithVueComponent = (passedComponent, events, fn) => {
   class ReactApp extends React.Component {
     constructor (props) {
       super(props)
       this.state = {
         message: props.message,
+        component: passedComponent,
       }
       this.mockReset = mockReset()
     }
@@ -23,15 +27,12 @@ const makeReactInstanceWithVueComponent = (passedComponent, events) => {
     render () {
       return (
         <div>
-          <input
-            type='text'
-            value={this.state.message}
-            onChange={this.onChange}
-          />
+          <input type='text' value={this.state.message} onChange={this.onChange} />
           <VueWrapper
             ref={ref => (this.vueWrapperRef = ref)}
-            component={passedComponent}
+            component={this.state.component}
             on={events}
+            fn={fn}
             message={this.state.message}
             reset={this.mockReset}
           />
@@ -109,6 +110,34 @@ describe('VueInReact', () => {
     )
   })
 
+  /**
+   * NOTE:  this case only occurs when using a wrapper component
+   * because the component filed is passed in curly braces of JSX,
+   * and it can be changed in `setSate` operation.
+   * However it won't occur in HOC mode or babel plugin mode.
+   * this test will fail. I'm trying to fixed it.
+   */
+  it('dynamic change component while using a wrapper component', () => {
+    const reactAppInstance = makeReactInstanceWithVueComponent(VueSingleFileComponent, null, fn)
+    expect(document.body.innerHTML).toBe(
+      normalizeHTMLString(
+        `<div id="root">
+          <div>
+            <input type="text" value="Message for Vue">
+            <div>
+              <span>Message for Vue</span> <button></button>
+            </div>
+          </div>
+        </div>`
+      )
+    )
+    reactAppInstance.setState({ component: VueSingleFileComponentChanged })
+
+    function fn () {
+      expect(document.body.innerHTML).toContain('<span>VueSingleFileComponentChanged</span>')
+    }
+  })
+
   it('wires up events correctly', () => {
     let eventRaised = false
     const hndlr = () => (eventRaised = true)
@@ -157,30 +186,21 @@ describe('VueInReact', () => {
       document.querySelectorAll('[data-reactroot]').forEach(el => {
         el.removeAttribute('data-reactroot')
       })
-      document.body.innerHTML = document.body.innerHTML.replace(
-        /<!--[\s\S]*?-->/g,
-        ''
-      )
+      document.body.innerHTML = document.body.innerHTML.replace(/<!--[\s\S]*?-->/g, '')
     }
 
     it('works with a string', () => {
       render('Hello')
-      expect(document.querySelector('#root div div').innerHTML).toBe(
-        '<div>Hello</div>'
-      )
+      expect(document.querySelector('#root div div').innerHTML).toBe('<div>Hello</div>')
     })
 
     it('works with a React component', () => {
       render(<div>Hello</div>)
-      expect(document.querySelector('#root div div').innerHTML).toBe(
-        '<div><div>Hello</div></div>'
-      )
+      expect(document.querySelector('#root div div').innerHTML).toBe('<div><div>Hello</div></div>')
     })
 
     it('works with a React component', () => {
-      render(
-        <VueWrapper component={componentWithChildren}>wow so nested</VueWrapper>
-      )
+      render(<VueWrapper component={componentWithChildren}>wow so nested</VueWrapper>)
       expect(document.querySelector('#root div div').innerHTML).toBe(
         '<div><div><div><div>wow so nested</div></div></div></div>'
       )
