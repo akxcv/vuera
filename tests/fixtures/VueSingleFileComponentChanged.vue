@@ -13,7 +13,6 @@
         }
     },
     mounted(){
-        console.log(this.message);
     },
     methods: {
       mayLog(e) {

@@ -9,7 +9,7 @@ import VueSingleFileComponentChanged from '../fixtures/VueSingleFileComponentCha
 const mockReset = () => {
   return jest.fn()
 }
-const makeReactInstanceWithVueComponent = (passedComponent, events) => {
+const makeReactInstanceWithVueComponent = (passedComponent, events, fn) => {
   class ReactApp extends React.Component {
     constructor (props) {
       super(props)
@@ -32,6 +32,7 @@ const makeReactInstanceWithVueComponent = (passedComponent, events) => {
             ref={ref => (this.vueWrapperRef = ref)}
             component={this.state.component}
             on={events}
+            fn={fn}
             message={this.state.message}
             reset={this.mockReset}
           />
@@ -117,7 +118,7 @@ describe('VueInReact', () => {
    * this test will fail. I'm trying to fixed it.
    */
   it('dynamic change component while using a wrapper component', () => {
-    const reactAppInstance = makeReactInstanceWithVueComponent(VueSingleFileComponent)
+    const reactAppInstance = makeReactInstanceWithVueComponent(VueSingleFileComponent, null, fn)
     expect(document.body.innerHTML).toBe(
       normalizeHTMLString(
         `<div id="root">
@@ -130,9 +131,11 @@ describe('VueInReact', () => {
         </div>`
       )
     )
-    reactAppInstance.setState({ component: VueSingleFileComponentChanged }, () => {
+    reactAppInstance.setState({ component: VueSingleFileComponentChanged })
+
+    function fn () {
       expect(document.body.innerHTML).toContain('<span>VueSingleFileComponentChanged</span>')
-    })
+    }
   })
 
   it('wires up events correctly', () => {

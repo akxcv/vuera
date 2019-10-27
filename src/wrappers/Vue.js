@@ -65,6 +65,9 @@ export default class VueContainer extends React.Component {
     reactThisBinding.vueInstance = new Vue({
       el: targetElement,
       data: props,
+      updated () {
+        Vue.nextTick(props.fn)
+      },
       render (createElement) {
         return createElement(
           VUE_COMPONENT_NAME,

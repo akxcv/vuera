@@ -258,6 +258,9 @@ var VueContainer = function (_React$Component) {
       reactThisBinding.vueInstance = new Vue({
         el: targetElement,
         data: props,
+        updated: function updated() {
+          Vue.nextTick(props.fn);
+        },
         render: function render(createElement) {
           return createElement(VUE_COMPONENT_NAME, {
             props: this.$data,
