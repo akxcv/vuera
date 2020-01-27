@@ -122,6 +122,18 @@ Now, use your React components like you would normally use your Vue components!
 </script>
 ```
 
+If you configure options in the root instance of a `Vue`, those will not be passed by default to  Vue instances within React components. So, for example an i18n or a store instance option configured at the top level is not available in the children Vue components wrapped in React components. To fix this, configure `vueInstanceOptions` similar to:
+
+```js
+import Vue from 'vue'
+// import other plugins or modules
+import { config } from 'vuera'
+
+// Vue.use(...)
+
+config.vueInstanceOptions = { plugin: thePlugIn, store: myStore };
+```
+
 **NOTE**: If you're using Vue < 2.4, you *must* pass all props to your React components via a
 special prop called `passedProps`:
 
@@ -292,7 +304,7 @@ I don't know, but the benchmark is coming. Stay tuned.
 
 ## Articles
 
-[Integrating React and Vue Components in One Application](https://x-team.com/blog/react-vue-component-integration/) 
+[Integrating React and Vue Components in One Application](https://x-team.com/blog/react-vue-component-integration/)
 by [@josephrexme](https://github.com/josephrexme)
 
 ## License
