@@ -1,7 +1,7 @@
 {
   "name": "vuera",
   "description": "Use React in Vue and Vue in React",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "repository": "akxcv/vuera",
   "author": "Alexander Komarov <ak@akxcv.com>",
   "license": "MIT",
