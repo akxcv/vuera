@@ -350,14 +350,14 @@ var ReactWrapper = {
         ref: function ref(_ref) {
           return _this2.reactComponentRef = _ref;
         }
-      })), this.$parent.$el);
+      })), this.$refs.react);
     }
   },
   mounted: function mounted() {
     this.mountReactComponent(this.$props.component);
   },
   beforeDestroy: function beforeDestroy() {
-    // ReactDOM.unmountComponentAtNode(this.$parent.$el)
+    ReactDOM.unmountComponentAtNode(this.$refs.react);
   },
   updated: function updated() {
     /**
