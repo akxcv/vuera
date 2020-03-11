@@ -44,8 +44,7 @@ const makeReactContainer = Component => {
 export default {
   props: ['component', 'passedProps'],
   render (createElement) {
-    const style = { all: 'inherit' }
-    return createElement('div', { ref: 'react', props: { style } })
+    return createElement('div')
   },
   methods: {
     mountReactComponent (component) {
@@ -59,7 +58,7 @@ export default {
           {...children}
           ref={ref => (this.reactComponentRef = ref)}
         />,
-        this.$refs.react
+        this.$parent.$el
       )
     },
   },
@@ -67,7 +66,7 @@ export default {
     this.mountReactComponent(this.$props.component)
   },
   beforeDestroy () {
-    ReactDOM.unmountComponentAtNode(this.$refs.react)
+    ReactDOM.unmountComponentAtNode(this.$parent.$el)
   },
   updated () {
     /**

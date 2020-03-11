@@ -336,8 +336,7 @@ var makeReactContainer = function makeReactContainer(Component) {
 var ReactWrapper = {
   props: ['component', 'passedProps'],
   render: function render(createElement) {
-    var style = { all: 'inherit' };
-    return createElement('div', { ref: 'react', props: { style: style } });
+    return createElement('div');
   },
 
   methods: {
@@ -350,14 +349,14 @@ var ReactWrapper = {
         ref: function ref(_ref) {
           return _this2.reactComponentRef = _ref;
         }
-      })), this.$refs.react);
+      })), this.$parent.$el);
     }
   },
   mounted: function mounted() {
     this.mountReactComponent(this.$props.component);
   },
   beforeDestroy: function beforeDestroy() {
-    ReactDOM.unmountComponentAtNode(this.$refs.react);
+    ReactDOM.unmountComponentAtNode(this.$parent.$el);
   },
   updated: function updated() {
     /**
