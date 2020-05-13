@@ -60,26 +60,24 @@ export default class VueContainer extends React.Component {
    * @param {ReactInstance} reactThisBinding - current instance of VueContainer
    */
   createVueInstance (targetElement, reactThisBinding) {
-    const { component, on, className, style, ...props } = reactThisBinding.props
-
-    let wrapper = null;
+    const { component, on, ...props } = reactThisBinding.props
     // `this` refers to Vue instance in the constructor
     reactThisBinding.vueInstance = new Vue({
       el: targetElement,
       data: props,
       ...config.vueInstanceOptions,
       render (createElement) {
-        wrapper = wrapper || wrapReactChildren(createElement, this.children);
+        const { className, style, children, ...attrs } = this.$data;
         return createElement(
           VUE_COMPONENT_NAME,
           {
             props: this.$data,
             on,
             class: className,
-            style: style,
-            attrs: { ...props, children: undefined }
+            style,
+            attrs
           },
-          [wrapper]
+          [wrapReactChildren(createElement, children)]
         )
       },
       components: {
