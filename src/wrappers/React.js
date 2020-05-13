@@ -60,8 +60,9 @@ export default {
           {...children}
           ref={ref => (this.reactComponentRef = ref)}
         />,
-        this.$refs.react
-      )
+        this.$refs.react.parentNode
+      );
+      this.$refs.react.remove();
     },
   },
   mounted () {
