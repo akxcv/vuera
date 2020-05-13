@@ -62,12 +62,14 @@ export default class VueContainer extends React.Component {
   createVueInstance (targetElement, reactThisBinding) {
     const { component, on, className, style, ...props } = reactThisBinding.props
 
+    let wrapper = null;
     // `this` refers to Vue instance in the constructor
     reactThisBinding.vueInstance = new Vue({
       el: targetElement,
       data: props,
       ...config.vueInstanceOptions,
       render (createElement) {
+        wrapper = wrapper || wrapReactChildren(createElement, this.children);
         return createElement(
           VUE_COMPONENT_NAME,
           {
@@ -75,9 +77,9 @@ export default class VueContainer extends React.Component {
             on,
             class: className,
             style: style,
-            attrs: props
+            attrs: { ...props, children: undefined }
           },
-          [wrapReactChildren(createElement, this.children)]
+          [wrapper]
         )
       },
       components: {
