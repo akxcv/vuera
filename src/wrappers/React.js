@@ -60,7 +60,7 @@ export default {
           {...children}
           ref={ref => (this.reactComponentRef = ref)}
         />,
-        this.$el.parentNode
+        this.$el
       );
     },
   },
@@ -68,7 +68,7 @@ export default {
     this.mountReactComponent(this.$props.component)
   },
   beforeDestroy () {
-    ReactDOM.unmountComponentAtNode(this.$parent.$el)
+    ReactDOM.unmountComponentAtNode(this.$el)
   },
   updated () {
     /**
