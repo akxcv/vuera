@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import * as babel from 'babel-core'
+import * as babel from '@babel/core'
 import prettier from 'prettier'
 import plugin from '../babel'
 
@@ -14,9 +14,13 @@ const compare = (source, expectedResult) => {
     babel.transformFileSync(source, {
       babelrc: false,
       plugins: [plugin],
-    }).code
+    }).code,
+    { printWidth: 80, parser: 'babel' }
   )
-  const expectedCode = prettier.format(fs.readFileSync(expectedResult, 'UTF-8'))
+  const expectedCode = prettier.format(
+    babel.transformFileSync(expectedResult, { babelrc: false }).code,
+    { printWidth: 80, parser: 'babel' }
+  )
   expect(transformedCode).toBe(expectedCode)
 }
 
