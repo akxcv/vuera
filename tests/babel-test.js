@@ -1,4 +1,3 @@
-import fs from 'fs'
 import path from 'path'
 import * as babel from '@babel/core'
 import prettier from 'prettier'

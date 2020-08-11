@@ -7,7 +7,9 @@ import VueInstanceOptionsComponent, { Plugin } from '../fixtures/VueInstanceOpti
 import VueRegisteredComponent from '../fixtures/VueRegisteredComponent'
 import VueSingleFileComponent from '../fixtures/VueSingleFileComponent.vue'
 
-const mockReset = () => { return jest.fn() }
+const mockReset = () => {
+  return jest.fn()
+}
 const makeReactInstanceWithVueComponent = (passedComponent, events) => {
   class ReactApp extends React.Component {
     constructor (props) {
@@ -25,11 +27,7 @@ const makeReactInstanceWithVueComponent = (passedComponent, events) => {
     render () {
       return (
         <div>
-          <input
-            type='text'
-            value={this.state.message}
-            onChange={this.onChange}
-          />
+          <input type='text' value={this.state.message} onChange={this.onChange} />
           <VueWrapper
             ref={ref => (this.vueWrapperRef = ref)}
             component={passedComponent}
@@ -159,30 +157,21 @@ describe('VueInReact', () => {
       document.querySelectorAll('[data-reactroot]').forEach(el => {
         el.removeAttribute('data-reactroot')
       })
-      document.body.innerHTML = document.body.innerHTML.replace(
-        /<!--[\s\S]*?-->/g,
-        ''
-      )
+      document.body.innerHTML = document.body.innerHTML.replace(/<!--[\s\S]*?-->/g, '')
     }
 
     it('works with a string', () => {
       render('Hello')
-      expect(document.querySelector('#root div div').innerHTML).toBe(
-        '<div>Hello</div>'
-      )
+      expect(document.querySelector('#root div div').innerHTML).toBe('<div>Hello</div>')
     })
 
     it('works with a React component', () => {
       render(<div>Hello</div>)
-      expect(document.querySelector('#root div div').innerHTML).toBe(
-        '<div><div>Hello</div></div>'
-      )
+      expect(document.querySelector('#root div div').innerHTML).toBe('<div><div>Hello</div></div>')
     })
 
     it('works with a React component', () => {
-      render(
-        <VueWrapper component={componentWithChildren}>wow so nested</VueWrapper>
-      )
+      render(<VueWrapper component={componentWithChildren}>wow so nested</VueWrapper>)
       expect(document.querySelector('#root div div').innerHTML).toBe(
         '<div><div><div><div>wow so nested</div></div></div></div>'
       )

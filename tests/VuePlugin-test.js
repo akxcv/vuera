@@ -27,7 +27,7 @@ describe('VuePlugin', () => {
         'vue-component': VueComponent,
         'vue-single-file-component': VueSingleFileComponent,
       },
-      render(createElement) {
+      render (createElement) {
         const elements = [
           createElement('vue-component', {
             props: {
@@ -81,7 +81,7 @@ describe('VuePlugin', () => {
     })
     return Vue.nextTick().then(() => {
       // React 15 compat
-      document.querySelectorAll('[data-reactroot]').forEach((el) => {
+      document.querySelectorAll('[data-reactroot]').forEach(el => {
         el.removeAttribute('data-reactroot')
       })
       expect(document.body.innerHTML).toBe(

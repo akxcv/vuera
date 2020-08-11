@@ -46,7 +46,7 @@ const makeVueInstanceWithReactComponent = (passedComponent, optionalRenderFn) =>
     components: { react: ReactWrapper },
   })
   // React 15 compat
-  document.querySelectorAll('[data-reactroot]').forEach((el) => {
+  document.querySelectorAll('[data-reactroot]').forEach(el => {
     el.removeAttribute('data-reactroot')
   })
   return vm
