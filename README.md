@@ -257,6 +257,49 @@ If you don't want to use the Vue plugin, you still have two ways of using this l
   }
 </script>
 ```
+### Using your own React components in Vue
+If you're using a pre-built React library from npm, the steps above will work fine for you. But if you want to use/develop your own React components(using JSX) in a Vue project, you will need to make some changes to the webpack config. 
+
+1. Install the babel react preset and transform plugin:
+```sh
+npm install -D @babel/preset-react babel-plugin-transform-react-jsx
+```
+
+2. Add a rule to the webpack config via vue.config.js. You will have to rename your React components to end in `.react.jsx` instead of `.jsx` for eg. `MyComponent.react.jsx` instead of `MyComponent.jsx`.
+
+```js
+module.exports = {
+  configureWebpack:{
+    module:{
+      rules:[
+        {
+          test: /\.(react)\.+(jsx)+$/,
+          exclude: /(node_modules)/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-react'],
+              plugins: ['transform-react-jsx']
+            }
+          }
+        },
+      ]
+    }
+  }
+}
+```
+
+3. Add the react babel plugin: 
+```js
+module.exports = {
+  presets: [
+    ['@vue/cli-plugin-babel/preset',{'jsx': false}],
+  ],
+  plugins: [
+    'transform-react-jsx'
+  ]
+}
+```
 
 ## FAQ (I think)
 
