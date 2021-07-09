@@ -167,9 +167,10 @@ var slicedToArray = function () {
 }();
 
 var VUE_COMPONENT_NAME = 'vuera-internal-component-name';
+var VUE_CHILDREN_COMPONENT_NAME = 'vuera-internal-react-wrapper';
 
 var wrapReactChildren = function wrapReactChildren(createElement, children) {
-  return createElement('vuera-internal-react-wrapper', {
+  return createElement(VUE_CHILDREN_COMPONENT_NAME, {
     props: {
       component: function component() {
         return React.createElement(
@@ -263,7 +264,7 @@ var VueContainer = function (_React$Component) {
           }, [wrapReactChildren(createElement, this.children)]);
         },
 
-        components: (_components = {}, defineProperty(_components, VUE_COMPONENT_NAME, component), defineProperty(_components, 'vuera-internal-react-wrapper', ReactWrapper), _components)
+        components: (_components = {}, defineProperty(_components, VUE_COMPONENT_NAME, component), defineProperty(_components, VUE_CHILDREN_COMPONENT_NAME, ReactWrapper), _components)
       }));
     }
   }, {
