@@ -24,6 +24,6 @@ export default {
         : mergedValue
       return Object.assign(mergedValue, wrappedComponents)
     }
-    Vue.prototype.constructor.isVue = true
+    Object.getPrototypeOf(Vue).constructor.isVue = true
   },
 }
