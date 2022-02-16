@@ -1,17 +1,14 @@
 /* eslint-disable prefer-object-spread/prefer-object-spread */
 
-import resolve from 'rollup-plugin-node-resolve'
-import babel from 'rollup-plugin-babel'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
+import { babel } from '@rollup/plugin-babel'
 
 const shared = {
   input: 'src/index.js',
   plugins: [
-    resolve({
-      customResolveOptions: {
-        moduleDirectory: 'node_modules',
-      },
-    }),
+    nodeResolve(),
     babel({
+      babelHelpers: 'external',
       exclude: 'node-modules/**',
     }),
   ],

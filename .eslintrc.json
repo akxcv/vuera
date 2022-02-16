@@ -1,5 +1,6 @@
 {
-  "parser": "babel-eslint",
+  "env": { "browser": true },
+  "parser": "@typescript-eslint/parser",
   "extends": ["umbrellio", "umbrellio/react"],
   "rules": {
     "quotes": ["error", "single"],
@@ -9,7 +10,7 @@
     "no-new": "off",
     "react/prop-types": "off"
   },
-  "plugins": ["vue"],
+  "plugins": ["vue", "jest", "react"],
   "globals": {
     "Symbol": true
   }

@@ -15,12 +15,12 @@ export default {
       const mergedValue = originalComponentsMergeStrategy(parent, ...args)
       const wrappedComponents = mergedValue
         ? Object.entries(mergedValue).reduce(
-            (acc, [k, v]) => ({
-              ...acc,
-              [k]: isReactComponent(v) ? VueResolver(v) : v,
-            }),
-            {}
-          )
+          (acc, [k, v]) => ({
+            ...acc,
+            [k]: isReactComponent(v) ? VueResolver(v) : v,
+          }),
+          {}
+        )
         : mergedValue
       return Object.assign(mergedValue, wrappedComponents)
     }
