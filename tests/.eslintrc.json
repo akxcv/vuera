@@ -9,6 +9,7 @@
     "react/prefer-stateless-function": "off"
   },
   "globals": {
-    "normalizeHTMLString": true
+    "normalizeHTMLString": true,
+    "html": true
   }
 }

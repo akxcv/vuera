@@ -4,14 +4,20 @@ import ReactWrapper from './React'
 import { config } from '../../src'
 
 const VUE_COMPONENT_NAME = 'vuera-internal-component-name'
-
+const VUERA_INTERNAL_REACT_WRAPPER = 'vuera-internal-react-wrapper'
 const wrapReactChildren = (createElement, children) =>
-  createElement('vuera-internal-react-wrapper', {
+  createElement(VUERA_INTERNAL_REACT_WRAPPER, {
     props: {
       component: () => <React.Fragment>{children}</React.Fragment>,
     },
   })
 
+// const wrappedReactJsxElement = (createElement, component) =>
+//   createElement(VUERA_INTERNAL_REACT_WRAPPER, {
+//     props: {
+//       component: () => <React.Fragment>{component}</React.Fragment>,
+//     }
+//   })
 export default class VueContainer extends React.Component {
   constructor (props) {
     super(props)
@@ -68,13 +74,28 @@ export default class VueContainer extends React.Component {
       data: props,
       ...config.vueInstanceOptions,
       render (createElement) {
+        const wrappedSlots = Object.keys(props).reduce((acc, key) => {
+          const prop = props[key]
+          if (React.isValidElement(prop)) {
+            acc[key] = () => wrapReactChildren(this.$createElement, prop)
+          }
+          if (Array.isArray(prop) && prop.length > 0 && prop.every(React.isValidElement)) {
+            acc[key] = () => prop.map(element => wrapReactChildren(this.$createElement, element))
+          }
+          return acc
+        }, {})
+        // console.log('slotsContent', wrappedSlots)
         return createElement(
           VUE_COMPONENT_NAME,
           {
             props: this.$data,
             on,
-          },
-          [wrapReactChildren(createElement, this.children)]
+            scopedSlots: {
+              ...wrappedSlots,
+              default: () => wrapReactChildren(this.$createElement, this.children),
+            },
+          }
+          // [wrapReactChildren(createElement, this.children)]
         )
       },
       components: {

@@ -7,13 +7,38 @@ var vuera = (function (exports, React, ReactDOM, Vue) {
   var ReactDOM__default = /*#__PURE__*/_interopDefaultLegacy(ReactDOM);
   var Vue__default = /*#__PURE__*/_interopDefaultLegacy(Vue);
 
-  const VUE_COMPONENT_NAME = 'vuera-internal-component-name';
+  function _extends() {
+    _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
 
-  const wrapReactChildren = (createElement, children) => createElement('vuera-internal-react-wrapper', {
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    return _extends.apply(this, arguments);
+  }
+
+  const VUE_COMPONENT_NAME = 'vuera-internal-component-name';
+  const VUERA_INTERNAL_REACT_WRAPPER = 'vuera-internal-react-wrapper';
+
+  const wrapReactChildren = (createElement, children) => createElement(VUERA_INTERNAL_REACT_WRAPPER, {
     props: {
       component: () => /*#__PURE__*/React__default["default"].createElement(React__default["default"].Fragment, null, children)
     }
-  });
+  }); // const wrappedReactJsxElement = (createElement, component) =>
+  //   createElement(VUERA_INTERNAL_REACT_WRAPPER, {
+  //     props: {
+  //       component: () => <React.Fragment>{component}</React.Fragment>,
+  //     }
+  //   })
+
 
   class VueContainer extends React__default["default"].Component {
     constructor(props) {
@@ -82,10 +107,28 @@ var vuera = (function (exports, React, ReactDOM, Vue) {
         ...config.vueInstanceOptions,
 
         render(createElement) {
+          const wrappedSlots = Object.keys(props).reduce((acc, key) => {
+            const prop = props[key];
+
+            if ( /*#__PURE__*/React__default["default"].isValidElement(prop)) {
+              acc[key] = () => wrapReactChildren(this.$createElement, prop);
+            }
+
+            if (Array.isArray(prop) && prop.length > 0 && prop.every(React__default["default"].isValidElement)) {
+              acc[key] = () => prop.map(element => wrapReactChildren(this.$createElement, element));
+            }
+
+            return acc;
+          }, {}); // console.log('slotsContent', wrappedSlots)
+
           return createElement(VUE_COMPONENT_NAME, {
             props: this.$data,
-            on
-          }, [wrapReactChildren(createElement, this.children)]);
+            on,
+            scopedSlots: { ...wrappedSlots,
+              default: () => wrapReactChildren(this.$createElement, this.children)
+            }
+          } // [wrapReactChildren(createElement, this.children)]
+          );
         },
 
         components: {
@@ -169,7 +212,7 @@ var vuera = (function (exports, React, ReactDOM, Vue) {
         const children = this.$slots.default !== undefined ? {
           children: this.$slots.default
         } : {};
-        ReactDOM__default["default"].render( /*#__PURE__*/React__default["default"].createElement(Component, babelHelpers.extends({}, this.$props.passedProps, this.$attrs, this.$listeners, children, {
+        ReactDOM__default["default"].render( /*#__PURE__*/React__default["default"].createElement(Component, _extends({}, this.$props.passedProps, this.$attrs, this.$listeners, children, {
           ref: ref => this.reactComponentRef = ref
         })), this.$refs.react);
       }
@@ -301,9 +344,8 @@ var vuera = (function (exports, React, ReactDOM, Vue) {
 
   };
 
-  /* eslint-disable prefer-object-spread/prefer-object-spread */
   function ReactResolver(component) {
-    return isReactComponent(component) ? component : props => /*#__PURE__*/React__default["default"].createElement(VueContainer, babelHelpers.extends({}, props, {
+    return isReactComponent(component) ? component : props => /*#__PURE__*/React__default["default"].createElement(VueContainer, _extends({}, props, {
       component: component
     }));
   }

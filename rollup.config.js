@@ -8,7 +8,7 @@ const shared = {
   plugins: [
     nodeResolve(),
     babel({
-      babelHelpers: 'external',
+      babelHelpers: 'bundled',
       exclude: 'node-modules/**',
     }),
   ],

@@ -8,6 +8,7 @@ export default {
           click: this.reset,
         },
       }),
+      [this.$scopedSlots.testSlot && this.$scopedSlots.testSlot()],
     ])
   },
 }

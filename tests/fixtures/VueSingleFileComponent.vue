@@ -2,6 +2,7 @@
   <div>
     <span>{{ message }}</span>
     <button @click="raiseEvent"></button>
+    <slot name="testSlot"></slot>
   </div>
 </template>
 

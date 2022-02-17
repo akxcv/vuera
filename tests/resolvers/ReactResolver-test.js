@@ -21,41 +21,45 @@ describe('VueInReact', () => {
   })
 
   it('returns given component when a React functional component is given', () => {
-    expect(VueInReact(ReactPureFunctionalComponent)).toBe(
-      ReactPureFunctionalComponent
-    )
+    expect(VueInReact(ReactPureFunctionalComponent)).toBe(ReactPureFunctionalComponent)
   })
 
   it('wraps Vue component', () => {
     const Component = VueInReact(VueComponent)
     ReactDOM.render(
-      <Component message='hi' reset={jest.fn()} />,
+      <Component message='hi' reset={jest.fn()} testSlot={<p>testSlot</p>} />,
       document.getElementById('root')
     )
     expect(document.getElementById('root').innerHTML).toBe(
-      '<div><span>hi</span><button></button></div>'
+      '<div><span>hi</span><button></button><div><p>testSlot</p></div></div>'
     )
   })
 
   it('wraps Vue registered component', () => {
     const Component = VueInReact(VueRegisteredComponent)
     ReactDOM.render(
-      <Component message='hi' reset={jest.fn()} />,
+      <Component message='hi' reset={jest.fn()} testSlot={<a>testSlot</a>} />,
       document.getElementById('root')
     )
     expect(document.getElementById('root').innerHTML).toBe(
-      '<div><span>hi</span><button></button></div>'
+      html`
+        <div>
+          <span>hi</span>
+          <button></button>
+          <div><a>testSlot</a></div>
+        </div>
+      `
     )
   })
 
   it('wraps Vue single file component', () => {
     const Component = VueInReact(VueSingleFileComponent)
     ReactDOM.render(
-      <Component message='hi' reset={jest.fn()} />,
+      <Component message='hi' reset={jest.fn()} testSlot={<span>testSlot</span>} />,
       document.getElementById('root')
     )
     expect(document.getElementById('root').innerHTML).toBe(
-      '<div><span>hi</span> <button></button></div>'
+      '<div><span>hi</span> <button></button> <div><span>testSlot</span></div></div>'
     )
   })
 })
