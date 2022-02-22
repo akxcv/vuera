@@ -68,7 +68,8 @@
     "test": "cross-env BABEL_ENV=test jest",
     "test:coverage": "yarn run test -- --coverage",
     "test:watch": "yarn run test -- --watch",
-    "precommit": "lint-staged && yarn run build && git add dist"
+    "precommit": "lint-staged && yarn run build && git add dist",
+    "prepublishOnly": "yarn run build"
   },
   "lint-staged": {
     "*.json": [
