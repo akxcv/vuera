@@ -39,11 +39,11 @@ export default class VueContainer extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
-    const { component, ...props } = nextProps
+  componentDidUpdate (prevProps, _prevState, snapshot) {
+    const { component, ...props } = this.props
 
     if (this.currentVueComponent !== component) {
-      this.updateVueComponent(this.props.component, component)
+      this.updateVueComponent(prevProps.component, component)
     }
     /**
      * NOTE: we're not comparing this.props and nextProps here, because I didn't want to write a
