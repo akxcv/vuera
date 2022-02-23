@@ -35,6 +35,6 @@ export default {
         [k: string]: Component;
       };
     };
-    Vue.prototype.constructor.isVue = true;
+    Object.getPrototypeOf(Vue).constructor.isVue = true;
   },
 };
