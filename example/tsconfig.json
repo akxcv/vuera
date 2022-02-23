@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "target": "ES2018",
+    "module": "commonjs",
+    "allowJs": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "declaration": false,
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.react.tsx",
+    "tests/**/*.ts",
+    // "src/**/*.vue",
+    "tests/**/*.tsx"
+  ],
+  "exclude": ["node_modules", "src/**/*.vue"],
+  "files": ["src/shims-vue.d.ts"],
+  "typeAcquisition": {
+    "enable": false,
+    "exclude": ["vue", "@vue"],
+    "disableFilenameBasedTypeAcquisition": true
+  }
+}
