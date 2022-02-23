@@ -1,10 +1,30 @@
 # vuera
+
 [![Build Status](https://travis-ci.org/akxcv/vuera.svg?branch=master)](https://travis-ci.org/akxcv/vuera)
 [![Coverage Status](https://coveralls.io/repos/github/akxcv/vuera/badge.svg?branch=master)](https://coveralls.io/github/akxcv/vuera?branch=master)
 
 > **NOTE:** This project is [looking for a maintainer](https://github.com/akxcv/vuera/issues/97)!
 
+## Install
+
+ `npm install vuera`
+
+or install with yarn:
+
+ `yarn add vuera`
+
+You can also try the library out via [unpkg]:
+
+```html
+<script src="https://unpkg.com/vuera"></script>
+```
+
+## Usage
+
+### Vue in a React app
+
 Use [Vue] components in your [React] app:
+
 ```jsx
 import React from 'react'
 import MyVueComponent from './MyVueComponent.vue'
@@ -15,7 +35,10 @@ export default props =>
   </div>
 ```
 
+### React in a Vue app
+
 Or use [React] components in your [Vue] app:
+
 ```vue
 <template>
   <div>
@@ -35,31 +58,15 @@ Or use [React] components in your [Vue] app:
 
 ## Use cases
 
-- 👨‍👩‍👧 Using both Vue and React in one app
-- 🏃 Migrating from React to Vue or from Vue to React
-
-## Installation
-
-Install with yarn:
-
-```sh
-$ yarn add vuera
-# or with npm:
-$ npm i -S vuera
-```
-
-You can also try the library out via [unpkg]:
-```html
-<script src="https://unpkg.com/vuera"></script>
-```
-
-## Usage
+* 👨‍👩‍👧 Using both Vue and React in one app
+* 🏃 Migrating from React to Vue or from Vue to React
 
 ### Vue in React - Preferred usage
 
 The preferred way to use Vue inside of a React app is to use a Babel plugin.
 
-Add `vuera/babel` to `plugins` section of your `.babelrc`:
+Add `vuera/babel` to `plugins` section of your `.babelrc` :
+
 ```json
 {
   "presets": "react",
@@ -89,7 +96,9 @@ The preferred way to use React inside of a Vue app is to use a Vue plugin.
 
 ```js
 import Vue from 'vue'
-import { VuePlugin } from 'vuera'
+import {
+    VuePlugin
+} from 'vuera'
 
 Vue.use(VuePlugin)
 /* ... */
@@ -122,20 +131,25 @@ Now, use your React components like you would normally use your Vue components!
 </script>
 ```
 
-If you configure options in the root instance of a `Vue`, those will not be passed by default to  Vue instances within React components. So, for example an i18n or a store instance option configured at the top level is not available in the children Vue components wrapped in React components. To fix this, configure `vueInstanceOptions` similar to:
+If you configure options in the root instance of a `Vue` , those will not be passed by default to  Vue instances within React components. So, for example an i18n or a store instance option configured at the top level is not available in the children Vue components wrapped in React components. To fix this, configure `vueInstanceOptions` similar to:
 
 ```js
 import Vue from 'vue'
 // import other plugins or modules
-import { config } from 'vuera'
+import {
+    config
+} from 'vuera'
 
 // Vue.use(...)
 
-config.vueInstanceOptions = { plugin: thePlugIn, store: myStore };
+config.vueInstanceOptions = {
+    plugin: thePlugIn,
+    store: myStore
+};
 ```
 
 **NOTE**: If you're using Vue < 2.4, you *must* pass all props to your React components via a
-special prop called `passedProps`:
+special prop called `passedProps` :
 
 ```vue
 <template>
