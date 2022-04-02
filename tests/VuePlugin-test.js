@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import Vue from '@vue/compat'
 import React from 'react'
 import { VuePlugin } from '../src'
 import VueComponent from './fixtures/VueComponent'

@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import Vue from '@vue/compat'
 import React from 'react'
 import { ReactWrapper } from '../../src'
 import PureFunctionalComponent from '../fixtures/ReactPureFunctionalComponent'
@@ -7,10 +7,7 @@ import ChildlessComponent from '../fixtures/ReactChildlessComponent'
 import olderVueCompat from '../utils/olderVueCompat'
 
 const mockReset = jest.fn()
-const makeVueInstanceWithReactComponent = (
-  passedComponent,
-  optionalRenderFn
-) => {
+const makeVueInstanceWithReactComponent = (passedComponent, optionalRenderFn) => {
   const vm = new Vue({
     el: '#app',
     data: {
@@ -107,9 +104,7 @@ describe('ReactInVue', () => {
     const componentWithChildren = ({ children }) => <div>{children}</div>
 
     it('works with a string', () => {
-      makeVueInstanceWithReactComponent(componentWithChildren, function (
-        createElement
-      ) {
+      makeVueInstanceWithReactComponent(componentWithChildren, function (createElement) {
         return createElement('div', [
           createElement(
             'react',
@@ -124,15 +119,11 @@ describe('ReactInVue', () => {
     })
 
     it('works with a Vue component', () => {
-      makeVueInstanceWithReactComponent(componentWithChildren, function (
-        createElement
-      ) {
+      makeVueInstanceWithReactComponent(componentWithChildren, function (createElement) {
         return createElement('div', [
-          createElement(
-            'react',
-            olderVueCompat({ props: { component: this.component } }),
-            [createElement('span', 'hello from span')]
-          ),
+          createElement('react', olderVueCompat({ props: { component: this.component } }), [
+            createElement('span', 'hello from span'),
+          ]),
         ])
       })
       expect(document.body.innerHTML).toBe(
@@ -145,21 +136,15 @@ describe('ReactInVue', () => {
     })
 
     it('works with a React component', () => {
-      makeVueInstanceWithReactComponent(componentWithChildren, function (
-        createElement
-      ) {
+      makeVueInstanceWithReactComponent(componentWithChildren, function (createElement) {
         return createElement('div', [
-          createElement(
-            'react',
-            olderVueCompat({ props: { component: this.component } }),
-            [
-              createElement(
-                'react',
-                olderVueCompat({ props: { component: this.component } }),
-                'child'
-              ),
-            ]
-          ),
+          createElement('react', olderVueCompat({ props: { component: this.component } }), [
+            createElement(
+              'react',
+              olderVueCompat({ props: { component: this.component } }),
+              'child'
+            ),
+          ]),
         ])
       })
       expect(document.body.innerHTML).toBe(
@@ -172,15 +157,12 @@ describe('ReactInVue', () => {
     })
 
     it('works with multiple children', () => {
-      makeVueInstanceWithReactComponent(componentWithChildren, function (
-        createElement
-      ) {
+      makeVueInstanceWithReactComponent(componentWithChildren, function (createElement) {
         return createElement('div', [
-          createElement(
-            'react',
-            olderVueCompat({ props: { component: this.component } }),
-            ['string inside', createElement('span', 'hello from span')]
-          ),
+          createElement('react', olderVueCompat({ props: { component: this.component } }), [
+            'string inside',
+            createElement('span', 'hello from span'),
+          ]),
         ])
       })
       expect(document.body.innerHTML).toBe(
@@ -209,15 +191,9 @@ describe('ReactInVue', () => {
     it('raises underlying prop type errors with children in childless component', () => {
       const spy = jest.spyOn(console, 'error')
 
-      makeVueInstanceWithReactComponent(ChildlessComponent, function (
-        createElement
-      ) {
+      makeVueInstanceWithReactComponent(ChildlessComponent, function (createElement) {
         return createElement('div', [
-          createElement(
-            'react',
-            olderVueCompat({ props: { component: this.component } }),
-            'child'
-          ),
+          createElement('react', olderVueCompat({ props: { component: this.component } }), 'child'),
         ])
       })
       expect(document.body.innerHTML).toBe(

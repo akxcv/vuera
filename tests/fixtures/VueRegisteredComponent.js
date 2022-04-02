@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import Vue from '@vue/compat'
 
 export default Vue.component('vue-registered-component', {
   props: ['message', 'reset'],

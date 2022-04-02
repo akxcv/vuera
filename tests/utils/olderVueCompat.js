@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import Vue from '@vue/compat'
 
 /**
  * In Vue < 2.4.0, there's no $attrs or $listeners. We have to pass props through a registered

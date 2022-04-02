@@ -1,5 +1,5 @@
 import React from 'react'
-import Vue from 'vue'
+import Vue from '@vue/compat'
 import ReactWrapper from './React'
 import { config } from '../../src'
 

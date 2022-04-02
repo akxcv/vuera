@@ -1,6 +1,6 @@
 import { __vueraReactResolver } from 'vuera'
 import React from 'react'
-import Vue from 'vue'
+import Vue from '@vue/compat'
 
 const VueComponent = Vue.component('hello', {})
 const VueComponent2 = Vue.component('hello', {})

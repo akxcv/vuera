@@ -1,9 +1,9 @@
 {
-  "name": "vuera",
+  "name": "vuera-vue3",
   "description": "Use React in Vue and Vue in React",
   "version": "0.2.7",
-  "repository": "akxcv/vuera",
-  "author": "Alexander Komarov <ak@akxcv.com>",
+  "repository": "https://github.com/hyzx86/vuera-vue3",
+  "author": "Tony Han <huarui2219@qq.com>",
   "license": "MIT",
   "main": "dist/vuera.cjs.js",
   "modules": "dist/vuera.es.js",
@@ -13,7 +13,9 @@
   "peerDependencies": {
     "react": ">= 15.2.0",
     "react-dom": ">= 15.2.0",
-    "vue": ">= 2.2"
+    "vue": "3.2.31",
+    "@vue/compat": "^3.2.31",
+    "@vue/compiler-sfc": "3.2.31"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -45,8 +47,9 @@
     "rollup": "0.51",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "vue": "2.5",
-    "vue-template-compiler": "2.5",
+    "vue": "3.2.31",
+    "@vue/compat": "^3.2.31",
+    "@vue/compiler-sfc": "3.2.31",
     "vue-template-es2015-compiler": "^1.5.3"
   },
   "scripts": {
