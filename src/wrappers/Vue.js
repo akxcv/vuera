@@ -56,7 +56,7 @@ export default class VueContainer extends React.Component {
    * NOTE: since we need to access the current instance of VueContainer, as well as the Vue instance
    * inside of the Vue constructor, we cannot bind this function to VueContainer, and we need to
    * pass VueContainer's binding explicitly.
-   * @param {HTMLElement} targetElement - element to attact the Vue instance to
+   * @param {HTMLElement} targetElement - element to attach the Vue instance to
    * @param {ReactInstance} reactThisBinding - current instance of VueContainer
    */
   createVueInstance (targetElement, reactThisBinding) {
