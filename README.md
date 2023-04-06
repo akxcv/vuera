@@ -4,7 +4,7 @@
 
 > **NOTE:** This project is [looking for a maintainer](https://github.com/akxcv/vuera/issues/97)!
 
-> Check out [veaury](https://github.com/devilwjp/veaury) for a more up-to date library.
+> Check out [veaury](https://github.com/devilwjp/veaury) or [vuera-ts](https://github.com/nmpribeiro/vuera-ts) for a more up-to date library.
 
 Use [Vue] components in your [React] app:
 ```jsx
