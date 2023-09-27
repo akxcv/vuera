@@ -1,7 +1,7 @@
 /* eslint-env node */
 module.exports = {
-  browser: true,
   collectCoverageFrom: ['src/**/*.js', 'babel.js'],
+  testEnvironment: 'jsdom',
   setupFiles: ['./tests/__setup__.js'],
   testMatch: ['<rootDir>/tests/**/*-test.js'],
   moduleFileExtensions: ['js', 'json', 'node', 'vue'],

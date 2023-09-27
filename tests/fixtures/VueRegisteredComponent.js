@@ -10,6 +10,7 @@ export default Vue.component('vue-registered-component', {
           click: this.reset,
         },
       }),
+      [this.$scopedSlots.testSlot && this.$scopedSlots.testSlot()],
     ])
   },
 })

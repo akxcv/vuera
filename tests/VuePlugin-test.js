@@ -76,42 +76,38 @@ describe('VuePlugin', () => {
       document.querySelectorAll('[data-reactroot]').forEach(el => {
         el.removeAttribute('data-reactroot')
       })
-      expect(document.body.innerHTML).toBe(
-        normalizeHTMLString(
-          `<div>
+      expect(html`${document.body.innerHTML}`).toBe(
+        html`<div>
+          <div>
+            <span>VUE</span>
+            <button></button>
+          </div>
+          <div>
+            <span>VUE REGISTERED</span>
+            <button></button>
+          </div>
+          <div><span>VUE SINGLE FILE</span> <button></button> </div>
+          <div>
             <div>
-              <span>VUE</span>
+              <span>REACT</span>
               <button></button>
             </div>
+          </div>
+          <div>
             <div>
-              <span>VUE REGISTERED</span>
+              <span>REACT FUNC</span>
               <button></button>
             </div>
-            <div>
-              <span>VUE SINGLE FILE</span> <button></button>
-            </div>
-            <div>
-              <div>
-                <span>REACT</span>
-                <button></button>
-              </div>
-            </div>
+          </div>
+          <div>
             <div>
               <div>
-                <span>REACT FUNC</span>
-                <button></button>
+                child1
+                <div>child2</div>
               </div>
             </div>
-            <div>
-              <div>
-                <div>
-                  child1
-                  <div>child2</div>
-                </div>
-              </div>
-            </div>
-          </div>`
-        )
+          </div>
+        </div>`
       )
     })
   })

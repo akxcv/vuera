@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import fs from 'fs'
 import path from 'path'
 import * as babel from 'babel-core'
@@ -14,9 +15,12 @@ const compare = (source, expectedResult) => {
     babel.transformFileSync(source, {
       babelrc: false,
       plugins: [plugin],
-    }).code
+    }).code,
+    { parser: 'babel' }
   )
-  const expectedCode = prettier.format(fs.readFileSync(expectedResult, 'UTF-8'))
+  const expectedCode = prettier.format(fs.readFileSync(expectedResult, 'UTF-8'), {
+    parser: 'babel',
+  })
   expect(transformedCode).toBe(expectedCode)
 }
 

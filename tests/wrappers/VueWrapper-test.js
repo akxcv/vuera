@@ -6,8 +6,11 @@ import VueComponent from '../fixtures/VueComponent'
 import VueInstanceOptionsComponent, { Plugin } from '../fixtures/VueInstanceOptionsComponent'
 import VueRegisteredComponent from '../fixtures/VueRegisteredComponent'
 import VueSingleFileComponent from '../fixtures/VueSingleFileComponent.vue'
+import VueSingleFileComponentWithChildren from '../fixtures/VueSingleFileComponentWithChildren.vue'
 
-const mockReset = () => { return jest.fn() }
+const mockReset = () => {
+  return jest.fn()
+}
 const makeReactInstanceWithVueComponent = (passedComponent, events) => {
   class ReactApp extends React.Component {
     constructor (props) {
@@ -25,17 +28,14 @@ const makeReactInstanceWithVueComponent = (passedComponent, events) => {
     render () {
       return (
         <div>
-          <input
-            type='text'
-            value={this.state.message}
-            onChange={this.onChange}
-          />
+          <input type='text' value={this.state.message} onChange={this.onChange} />
           <VueWrapper
             ref={ref => (this.vueWrapperRef = ref)}
             component={passedComponent}
             on={events}
             message={this.state.message}
             reset={this.mockReset}
+            testSlot={<p>testSlot</p>}
           />
         </div>
       )
@@ -55,7 +55,6 @@ const makeReactInstanceWithVueComponent = (passedComponent, events) => {
   })
   return instance
 }
-
 describe('VueInReact', () => {
   beforeEach(() => {
     document.body.innerHTML = '<div id="root"></div>'
@@ -64,50 +63,47 @@ describe('VueInReact', () => {
   it('mounts the Vue component correctly', () => {
     makeReactInstanceWithVueComponent(VueComponent)
     expect(document.body.innerHTML).toBe(
-      normalizeHTMLString(
-        `<div id="root">
+      html`<div id="root">
+        <div>
+          <input type="text" value="Message for Vue">
           <div>
-            <input type="text" value="Message for Vue">
-            <div>
-              <span>Message for Vue</span>
-              <button></button>
-            </div>
+            <span>Message for Vue</span>
+            <button></button>
+            <div><p>testSlot</p></div>
           </div>
-        </div>`
-      )
+        </div>
+      </div>`
     )
   })
 
   it('mounts the Vue registered component correctly', () => {
     makeReactInstanceWithVueComponent(VueRegisteredComponent)
     expect(document.body.innerHTML).toBe(
-      normalizeHTMLString(
-        `<div id="root">
+      html`<div id="root">
+        <div>
+          <input type="text" value="Message for Vue">
           <div>
-            <input type="text" value="Message for Vue">
-            <div>
-              <span>Message for Vue</span>
-              <button></button>
-            </div>
+            <span>Message for Vue</span>
+            <button></button>
+            <div><p>testSlot</p></div>
           </div>
-        </div>`
-      )
+        </div>
+      </div>`
     )
   })
 
   it('mounts the Vue single file component correctly', () => {
     makeReactInstanceWithVueComponent(VueSingleFileComponent)
     expect(document.body.innerHTML).toBe(
-      normalizeHTMLString(
-        `<div id="root">
+      html`<div id="root">
+        <div>
+          <input type="text" value="Message for Vue">
           <div>
-            <input type="text" value="Message for Vue">
-            <div>
-              <span>Message for Vue</span> <button></button>
-            </div>
+            <span>Message for Vue</span> <button></button> 
+            <div><p>testSlot</p></div>
           </div>
-        </div>`
-      )
+        </div>
+      </div>`
     )
   })
 
@@ -144,11 +140,7 @@ describe('VueInReact', () => {
   })
 
   describe('children', () => {
-    const componentWithChildren = {
-      render (createElement) {
-        return createElement('div', this.$slots.default)
-      },
-    }
+    const componentWithChildren = VueSingleFileComponentWithChildren
 
     const render = (...children) => {
       ReactDOM.render(
@@ -159,32 +151,23 @@ describe('VueInReact', () => {
       document.querySelectorAll('[data-reactroot]').forEach(el => {
         el.removeAttribute('data-reactroot')
       })
-      document.body.innerHTML = document.body.innerHTML.replace(
-        /<!--[\s\S]*?-->/g,
-        ''
-      )
+      document.body.innerHTML = document.body.innerHTML.replace(/<!--[\s\S]*?-->/g, '')
     }
 
     it('works with a string', () => {
       render('Hello')
-      expect(document.querySelector('#root div div').innerHTML).toBe(
-        '<div>Hello</div>'
-      )
+      expect(document.querySelector('#root div div').innerHTML).toBe('Hello')
     })
 
     it('works with a React component', () => {
       render(<div>Hello</div>)
-      expect(document.querySelector('#root div div').innerHTML).toBe(
-        '<div><div>Hello</div></div>'
-      )
+      expect(document.querySelector('#root div div').innerHTML).toBe('<div>Hello</div>')
     })
 
     it('works with a React component', () => {
-      render(
-        <VueWrapper component={componentWithChildren}>wow so nested</VueWrapper>
-      )
+      render(<VueWrapper component={componentWithChildren}>wow so nested</VueWrapper>)
       expect(document.querySelector('#root div div').innerHTML).toBe(
-        '<div><div><div><div>wow so nested</div></div></div></div>'
+        '<div><div>wow so nested</div></div>'
       )
     })
 
@@ -196,13 +179,15 @@ describe('VueInReact', () => {
       )
       expect(document.querySelector('#root div div').innerHTML).toBe(
         normalizeHTMLString(
-          `<div>
-            Hi there
-            <div>Hello</div>
-            <div><div><div>
-              wow so nested
-            </div></div></div>
-          </div>`
+          `
+          Hi there
+          <div>
+            Hello
+          </div>
+          <div>
+            <div>wow so nested</div>
+          </div>
+          `
         )
       )
     })
