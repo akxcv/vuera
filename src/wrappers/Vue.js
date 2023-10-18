@@ -4,9 +4,10 @@ import ReactWrapper from './React'
 import { config } from '../../src'
 
 const VUE_COMPONENT_NAME = 'vuera-internal-component-name'
+const VUE_CHILDREN_COMPONENT_NAME = 'vuera-internal-react-wrapper'
 
 const wrapReactChildren = (createElement, children) =>
-  createElement('vuera-internal-react-wrapper', {
+  createElement(VUE_CHILDREN_COMPONENT_NAME, {
     props: {
       component: () => <div>{children}</div>,
     },
@@ -79,7 +80,7 @@ export default class VueContainer extends React.Component {
       },
       components: {
         [VUE_COMPONENT_NAME]: component,
-        'vuera-internal-react-wrapper': ReactWrapper,
+        [VUE_CHILDREN_COMPONENT_NAME]: ReactWrapper,
       },
     })
   }
