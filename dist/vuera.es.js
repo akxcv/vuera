@@ -170,7 +170,7 @@ var wrapReactChildren = function wrapReactChildren(createElement, children) {
     props: {
       component: function component() {
         return React.createElement(
-          'div',
+          React.Fragment,
           null,
           children
         );
