@@ -20,9 +20,7 @@ describe('__vueraReactResolver', () => {
   })
 
   it('behaves like React.createElement when a React functional component is given', () => {
-    expect(
-      __vueraReactResolver(ReactPureFunctionalComponent, { message: 'hi' })
-    ).toEqual(
+    expect(__vueraReactResolver(ReactPureFunctionalComponent, { message: 'hi' })).toEqual(
       React.createElement(ReactPureFunctionalComponent, { message: 'hi' })
     )
   })
@@ -37,9 +35,7 @@ describe('__vueraReactResolver', () => {
   })
 
   it('wraps Vue registered component', () => {
-    expect(
-      __vueraReactResolver(VueRegisteredComponent, { message: 'hi' })
-    ).toEqual(
+    expect(__vueraReactResolver(VueRegisteredComponent, { message: 'hi' })).toEqual(
       React.createElement(VueWrapper, {
         component: VueRegisteredComponent,
         message: 'hi',
@@ -48,9 +44,7 @@ describe('__vueraReactResolver', () => {
   })
 
   it('wraps Vue single file component', () => {
-    expect(
-      __vueraReactResolver(VueSingleFileComponent, { message: 'hi' })
-    ).toEqual(
+    expect(__vueraReactResolver(VueSingleFileComponent, { message: 'hi' })).toEqual(
       React.createElement(VueWrapper, {
         component: VueSingleFileComponent,
         message: 'hi',

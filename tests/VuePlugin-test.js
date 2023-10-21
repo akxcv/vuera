@@ -4,6 +4,7 @@ import { VuePlugin } from '../src'
 import VueComponent from './fixtures/VueComponent'
 import ReactComponent from './fixtures/ReactComponent'
 import ReactPureFunctionalComponent from './fixtures/ReactPureFunctionalComponent'
+import ReactComponentWithHooks from './fixtures/ReactComponentWithHooks'
 import './fixtures/VueRegisteredComponent' // globally registered Vue component
 import VueSingleFileComponent from './fixtures/VueSingleFileComponent.vue'
 import olderVueCompat from './utils/olderVueCompat'
@@ -22,11 +23,12 @@ describe('VuePlugin', () => {
         'react-component': ReactComponent,
         'react-pure-functional-component': ReactPureFunctionalComponent,
         'react-with-children': ({ children }) => <div>{children}</div>,
+        'react-component-with-hooks': ReactComponentWithHooks,
         'vue-component': VueComponent,
         'vue-single-file-component': VueSingleFileComponent,
       },
       render (createElement) {
-        return createElement('div', [
+        const elements = [
           createElement('vue-component', {
             props: {
               message: 'VUE',
@@ -68,7 +70,13 @@ describe('VuePlugin', () => {
             })
           ),
           createElement('react-with-children', ['child1', createElement('div', 'child2')]),
-        ])
+        ]
+
+        if (React.version >= '16.8.0') {
+          elements.push(createElement('react-component-with-hooks'))
+        }
+
+        return createElement('div', elements)
       },
     })
     return Vue.nextTick().then(() => {
@@ -102,6 +110,9 @@ describe('VuePlugin', () => {
                 <button></button>
               </div>
             </div>
+            ${React.version >= '16.8.0' ? `<div>
+              <input type="text" value="">
+            </div>` : ''}
             <div>
               <div>
                 <div>
