@@ -2,15 +2,25 @@ import React from 'react'
 import Vue from 'vue'
 import ReactWrapper from './React'
 import { config } from '../../src'
+import { gte } from '../utils/compare'
 
 const VUE_COMPONENT_NAME = 'vuera-internal-component-name'
 
-const wrapReactChildren = (createElement, children) =>
+const wrapReactChildren = (createElement, children, _useFragment) => {
+  /**
+   * allow users to remove useless by _useFragment property while your React
+   * version is greater then or equal to 16.2.0
+   */
+  const useFragment = React.Fragment !== undefined && gte(React.version, '16.2.0') && _useFragment
+
   createElement('vuera-internal-react-wrapper', {
     props: {
-      component: () => <div>{children}</div>,
+      component: () => {
+        return useFragment ? <React.Fragment>{children}</React.Fragment> : <div>{children}</div>
+      },
     },
   })
+}
 
 export default class VueContainer extends React.Component {
   constructor (props) {
@@ -74,7 +84,7 @@ export default class VueContainer extends React.Component {
             props: this.$data,
             on,
           },
-          [wrapReactChildren(createElement, this.children)]
+          [wrapReactChildren(createElement, this.children, !!(props && props._useFragment))]
         )
       },
       components: {

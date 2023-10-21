@@ -2,6 +2,30 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Vue from 'vue';
 
+function compare(a, b) {
+  var v1 = a.split('.').map(function (n) {
+    return Number(n);
+  });
+  var v2 = b.split('.').map(function (n) {
+    return Number(n);
+  });
+  var len = Math.min(v1.length, v2.length);
+  var result = 0;
+  for (var i = 0; i < len; i += 1) {
+    if (v1[i] === v2[i]) {
+      continue;
+    } else {
+      result = v1[i] > v2[i] ? 1 : -1;
+      break;
+    }
+  }
+  return result === 0 ? v1.length - v2.length : result;
+}
+
+function gte(a, b) {
+  return compare(a, b) >= 0;
+}
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
 } : function (obj) {
@@ -165,11 +189,21 @@ var slicedToArray = function () {
 
 var VUE_COMPONENT_NAME = 'vuera-internal-component-name';
 
-var wrapReactChildren = function wrapReactChildren(createElement, children) {
-  return createElement('vuera-internal-react-wrapper', {
+var wrapReactChildren = function wrapReactChildren(createElement, children, _useFragment) {
+  /**
+   * allow users to remove useless by _useFragment property while your React
+   * version is greater then or equal to 16.2.0
+   */
+  var useFragment = React.Fragment !== undefined && gte(React.version, '16.2.0') && _useFragment;
+
+  createElement('vuera-internal-react-wrapper', {
     props: {
       component: function component() {
-        return React.createElement(
+        return useFragment ? React.createElement(
+          React.Fragment,
+          null,
+          children
+        ) : React.createElement(
           'div',
           null,
           children
@@ -257,7 +291,7 @@ var VueContainer = function (_React$Component) {
           return createElement(VUE_COMPONENT_NAME, {
             props: this.$data,
             on: on
-          }, [wrapReactChildren(createElement, this.children)]);
+          }, [wrapReactChildren(createElement, this.children, !!(props && props._useFragment))]);
         },
 
         components: (_components = {}, defineProperty(_components, VUE_COMPONENT_NAME, component), defineProperty(_components, 'vuera-internal-react-wrapper', ReactWrapper), _components)
