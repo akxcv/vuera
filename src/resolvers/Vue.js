@@ -1,12 +1,13 @@
 import { ReactWrapper } from '../'
+import {h} from "vue"
 
 export default function VueResolver (component) {
   return {
     components: { ReactWrapper },
     props: ['passedProps'],
     inheritAttrs: false,
-    render (createElement) {
-      return createElement(
+    render () {
+      return h(
         'react-wrapper',
         {
           props: {
