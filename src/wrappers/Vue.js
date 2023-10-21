@@ -8,7 +8,7 @@ const VUE_COMPONENT_NAME = 'vuera-internal-component-name'
 const wrapReactChildren = (createElement, children) =>
   createElement('vuera-internal-react-wrapper', {
     props: {
-      component: () => <div>{children}</div>,
+      component: () => <React.Fragment>{children}</React.Fragment>,
     },
   })
 
@@ -61,20 +61,23 @@ export default class VueContainer extends React.Component {
    */
   createVueInstance (targetElement, reactThisBinding) {
     const { component, on, ...props } = reactThisBinding.props
-
     // `this` refers to Vue instance in the constructor
     reactThisBinding.vueInstance = new Vue({
       el: targetElement,
       data: props,
       ...config.vueInstanceOptions,
       render (createElement) {
+        const { className, style, children, ...attrs } = this.$data;
         return createElement(
           VUE_COMPONENT_NAME,
           {
             props: this.$data,
             on,
+            class: className,
+            style,
+            attrs
           },
-          [wrapReactChildren(createElement, this.children)]
+          [wrapReactChildren(createElement, children)]
         )
       },
       components: {
