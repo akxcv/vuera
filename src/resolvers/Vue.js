@@ -1,4 +1,5 @@
 import { ReactWrapper } from '../'
+import { camelCaseKeys } from '../utils/camelCase'
 
 export default function VueResolver (component) {
   return {
@@ -13,7 +14,7 @@ export default function VueResolver (component) {
             component,
             passedProps: this.$props.passedProps,
           },
-          attrs: this.$attrs,
+          attrs: camelCaseKeys(this.$attrs),
           on: this.$listeners,
         },
         this.$slots.default
