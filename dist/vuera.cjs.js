@@ -408,6 +408,7 @@ var ReactWrapper = {
 };
 
 function isReactComponent(component) {
+  if (!component) return false;
   if ((typeof component === 'undefined' ? 'undefined' : _typeof(component)) === 'object' && !isReactForwardReference(component)) {
     return false;
   }
